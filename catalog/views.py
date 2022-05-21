@@ -30,3 +30,7 @@ class BookListView(generic.ListView):
 
     # def get_queryset(self):
     #    return Book.objects.all()[:5]
+
+
+class BookDetailView(generic.DetailView):
+    model = Book

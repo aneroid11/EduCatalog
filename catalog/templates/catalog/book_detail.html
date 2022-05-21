@@ -1,0 +1,17 @@
+{% extends "catalog/base_generic.html" %}
+
+{% block title %}
+    <title>Подробная информация о книге</title>
+{% endblock %}
+
+{% block content %}
+    <h1>Название: {{ book.title }}</h1>
+
+    <p><strong>Автор:</strong> <a href="">{{ book.author }}</a></p>
+    <strong>Описание:</strong>
+    <div class="multiline">{{ book.summary }}</div>
+    <br>
+    <p><strong>ISBN:</strong> {{ book.isbn }}</p>
+    <p><strong>Язык:</strong> {{ book.language }}</p>
+    <p><strong>Жанр:</strong> {{ book.display_genre }}</p>
+{% endblock %}
