@@ -27,6 +27,7 @@ def index(request: HttpRequest) -> HttpResponse:
 
 class BookListView(generic.ListView):
     model = Book
+    paginate_by = 5
 
     # def get_queryset(self):
     #    return Book.objects.all()[:5]
