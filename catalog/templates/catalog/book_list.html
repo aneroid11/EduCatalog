@@ -9,8 +9,10 @@
     {% if book_list %}
         <ul>
         {% for book in book_list %}
-            <li>{{ book.title }} ({{ book.author }})</li>
+            <li><a href="{{ book.get_absolute_url }}">{{ book.title }}</a> ({{ book.author }})</li>
         {% endfor %}
         </ul>
+    {% else %}
+        <p>В библиотеке нет книг.</p>
     {% endif %}
 {% endblock %}
