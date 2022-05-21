@@ -17,4 +17,5 @@ def index(request: HttpRequest) -> HttpResponse:
         "num_authors": num_authors
     }
 
-    return render(request, "index.html", context)
+    # return render(request, "catalog/index.html", context)
+    return render(request, "catalog/base_generic.html", context)
