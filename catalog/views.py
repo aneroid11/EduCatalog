@@ -13,6 +13,10 @@ def index(request: HttpRequest) -> HttpResponse:
     num_genres = Genre.objects.count()
     num_books_with_jojo = Book.objects.filter(title__icontains="jojo").count()
 
+    num_user_visits = request.session.get("num_user_visits", 0)
+    num_user_visits += 1
+    request.session["num_user_visits"] = num_user_visits
+
     context = {
         "num_books": num_books,
         "num_instances": num_instances,
@@ -20,6 +24,7 @@ def index(request: HttpRequest) -> HttpResponse:
         "num_authors": num_authors,
         "num_genres": num_genres,
         "num_books_with_jojo": num_books_with_jojo,
+        "num_user_visits": num_user_visits,
     }
 
     return render(request, "catalog/index.html", context)
@@ -36,6 +41,7 @@ class BookDetailView(generic.DetailView):
 
 class AuthorListView(generic.ListView):
     model = Author
+    paginate_by = 5
 
 
 class AuthorDetailView(generic.DetailView):
