@@ -1,0 +1,16 @@
+{% extends "catalog/base_generic.html" %}
+
+{% block title %}
+    <title>Список</title>
+{% endblock %}
+
+{% block content %}
+    <h1>Список книг</h1>
+    {% if book_list %}
+        <ul>
+        {% for book in book_list %}
+            <li>{{ book.title }} ({{ book.author }})</li>
+        {% endfor %}
+        </ul>
+    {% endif %}
+{% endblock %}

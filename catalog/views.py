@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpRequest, HttpResponse
+from django.views import generic
 
 from .models import Book, BookInstance, Author, Genre
 
@@ -22,3 +23,10 @@ def index(request: HttpRequest) -> HttpResponse:
     }
 
     return render(request, "catalog/index.html", context)
+
+
+class BookListView(generic.ListView):
+    model = Book
+
+    # def get_queryset(self):
+    #    return Book.objects.all()[:5]
