@@ -7,9 +7,16 @@
 {% block content %}
     <h1>Автор: {{ author.last_name }}, {{ author.first_name }}</h1>
     {% if author.date_of_birth %}
-        <p><strong>Дата рождения:</strong> {{ author.date_of_birth }}</p>
+        <p>{{ author.date_of_birth }} - {% if author.date_of_death %}{{ author.date_of_death }} {% endif %}</p>
     {% endif %}
-    {% if author.date_of_death %}
-        <p><strong>Дата смерти:</strong> {{ author.date_of_death }}</p>
-    {% endif %}
+
+    <div style="margin-left:20px; margin-top:20px">
+        <h4>Книги</h4>
+
+        {% for book in author.book_set.all %}
+            <a href="{{ book.get_absolute_url }}"><strong>{{ book.title }}</strong></a> ({{ book.id }}) <br>
+            <div class="multiline">{{ book.summary }}</div>
+            <br>
+        {% endfor %}
+    </div>
 {% endblock %}
