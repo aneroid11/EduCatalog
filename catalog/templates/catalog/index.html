@@ -2,7 +2,13 @@
 
 {% block content %}
     <h1>Банк учебных материалов</h1>
-    <p>Добро пожаловать! Добро пожаловать в Сити-17!</p>
-    Меня зовут не зовут, <br>
-    Я сам прихожу
+    <p>Добро пожаловать!</p>
+    <h2>Динамический контент</h2>
+    <p>Информация о том, что есть в библиотеке:</p>
+    <ul class="info-list">
+        <li><strong>Книг:</strong> {{ num_books }}</li>
+        <li><strong>Экземпляров книг:</strong> {{ num_instances }}</li>
+        <li><strong>Доступных в данный момент экземпляров:</strong> {{ num_instances_available }}</li>
+        <li><strong>Авторов:</strong> {{ num_authors }}</li>
+    </ul>
 {% endblock %}
