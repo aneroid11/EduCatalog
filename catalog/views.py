@@ -29,9 +29,14 @@ class BookListView(generic.ListView):
     model = Book
     paginate_by = 5
 
-    # def get_queryset(self):
-    #    return Book.objects.all()[:5]
-
 
 class BookDetailView(generic.DetailView):
     model = Book
+
+
+class AuthorListView(generic.ListView):
+    model = Author
+
+
+class AuthorDetailView(generic.DetailView):
+    model = Author

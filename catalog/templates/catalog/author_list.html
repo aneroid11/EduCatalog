@@ -1,0 +1,18 @@
+{% extends "catalog/base_generic.html" %}
+
+{% block title %}
+    <title>Список авторов</title>
+{% endblock %}
+
+{% block content %}
+    <h1>Список авторов</h1>
+    {% if author_list %}
+        <ul>
+        {% for author in author_list %}
+            <li>{{ author.last_name }}, {{ author.first_name }}</li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p>Нет авторов.</p>
+    {% endif %}
+{% endblock %}
