@@ -27,7 +27,7 @@ class Book(models.Model):
                                       "ISBN number"
                                       "</a>")
     genre = models.ManyToManyField(Genre, help_text="Select a genre to the book")
-    language = models.ForeignKey(Language, on_delete=models.RESTRICT)
+    language = models.ForeignKey(Language, on_delete=models.RESTRICT, null=True)
 
     def __str__(self):
         return self.title
