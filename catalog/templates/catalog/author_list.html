@@ -9,7 +9,7 @@
     {% if author_list %}
         <ul>
         {% for author in author_list %}
-            <li>{{ author.last_name }}, {{ author.first_name }}</li>
+            <li><a href="{{ author.get_absolute_url }}">{{ author.last_name }}, {{ author.first_name }}</a></li>
         {% endfor %}
         </ul>
     {% else %}

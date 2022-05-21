@@ -1,0 +1,15 @@
+{% extends "catalog/base_generic.html" %}
+
+{% block title %}
+    <title>Информация об авторе</title>
+{% endblock %}
+
+{% block content %}
+    <h1>Автор: {{ author.last_name }}, {{ author.first_name }}</h1>
+    {% if author.date_of_birth %}
+        <p><strong>Дата рождения:</strong> {{ author.date_of_birth }}</p>
+    {% endif %}
+    {% if author.date_of_death %}
+        <p><strong>Дата смерти:</strong> {{ author.date_of_death }}</p>
+    {% endif %}
+{% endblock %}
