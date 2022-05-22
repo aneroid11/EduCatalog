@@ -1,0 +1,22 @@
+{% extends "catalog/base_generic.html" %}
+
+{% block title %}
+    <title>Все взятые книги</title>
+{% endblock %}
+
+{% block content %}
+    <h1>Все взятые книги</h1>
+
+    {% if bookinstance_list %}
+        <ul>
+            {% for bookinstance in bookinstance_list %}
+                <li class="{% if bookinstance.is_overdue %}text-danger{% endif %}">
+                    <a href="{{ bookinstance.book.get_absolute_url }}">{{ bookinstance.book.title }}</a>
+                    ({{ bookinstance.due_back }}) - {{ bookinstance.borrower.get_username }}
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <h1>Никто пока не взял ни одной книги.</h1>
+    {% endif %}
+{% endblock %}
