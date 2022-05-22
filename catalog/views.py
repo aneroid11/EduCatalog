@@ -118,3 +118,22 @@ class AuthorDelete(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
     permission_required = ("catalog.can_mark_returned",)
     model = Author
     success_url = reverse_lazy('authors')
+
+
+class BookCreate(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
+    permission_required = ('catalog.can_mark_returned',)
+    model = Book
+    fields = ["title", "author", "summary", "isbn", "genre", "language"]
+    initial = {"title": "Новая книга"}
+
+
+class BookUpdate(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
+    permission_required = ('catalog.can_mark_returned',)
+    model = Book
+    fields = ["title", "author", "summary", "isbn", "genre", "language"]
+
+
+class BookDelete(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
+    permission_required = ("catalog.can_mark_returned",)
+    model = Book
+    success_url = reverse_lazy('books')

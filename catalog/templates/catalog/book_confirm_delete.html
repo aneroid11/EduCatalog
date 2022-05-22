@@ -1,0 +1,17 @@
+{% extends "catalog/base_generic.html" %}
+
+{% block title %}
+    <title>Удаление книги</title>
+{% endblock %}
+
+{% block content %}
+    <h1>Удаление книги</h1>
+
+    <p>Вы действительно хотите удалить книгу: {{ book }}?</p>
+
+    <form action="" method="POST">
+        {% csrf_token %}
+        <input type="submit" value="Да, удалить">
+    </form>
+
+{% endblock %}
