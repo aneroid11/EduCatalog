@@ -101,17 +101,20 @@ class AllLoanedBooksListView(LoginRequiredMixin, PermissionRequiredMixin, generi
         return BookInstance.objects.filter(status__exact='o').order_by("due_back")
 
 
-class AuthorCreate(CreateView):
+class AuthorCreate(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
+    permission_required = ('catalog.can_mark_returned',)
     model = Author
     fields = ['first_name', 'last_name', 'date_of_birth', 'date_of_death']
     initial = {'date_of_death': '2222-01-01'}
 
 
-class AuthorUpdate(UpdateView):
+class AuthorUpdate(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
+    permission_required = ('catalog.can_mark_returned',)
     model = Author
     fields = ['first_name', 'last_name', 'date_of_birth', 'date_of_death']
 
 
-class AuthorDelete(DeleteView):
+class AuthorDelete(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
+    permission_required = ("catalog.can_mark_returned",)
     model = Author
     success_url = reverse_lazy('authors')
