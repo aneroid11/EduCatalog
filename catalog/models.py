@@ -82,11 +82,11 @@ class BookInstance(models.Model):
 
 
 class Author(models.Model):
-    first_name = models.CharField(max_length=200)
-    last_name = models.CharField(max_length=200)
+    first_name = models.CharField(max_length=200, verbose_name="Имя")
+    last_name = models.CharField(max_length=200, verbose_name="Фамилия")
 
-    date_of_birth = models.DateField(null=True, blank=True)
-    date_of_death = models.DateField("Died", null=True, blank=True)
+    date_of_birth = models.DateField(null=True, blank=True, verbose_name="Дата рождения")
+    date_of_death = models.DateField(null=True, blank=True, verbose_name="Дата смерти")
 
     class Meta:
         ordering = ["last_name", "first_name"]
