@@ -1,0 +1,5 @@
+[run]
+omit = catalog/migrations/*
+
+[report]
+omit = catalog/migrations/*
