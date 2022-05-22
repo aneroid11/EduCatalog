@@ -13,6 +13,7 @@
                 <li class="{% if bookinstance.is_overdue %}text-danger{% endif %}">
                     <a href="{{ bookinstance.book.get_absolute_url }}">{{ bookinstance.book.title }}</a>
                     ({{ bookinstance.due_back }}) - {{ bookinstance.borrower.get_username }}
+                    - <a href="{% url 'renew-book-librarian' bookinstance.id %}">обновить</a>
                 </li>
             {% endfor %}
         </ul>
