@@ -18,8 +18,6 @@
                 {% block sidebar %}
                     <ul class="sidebar-nav">
                         <li><a href="{% url 'index' %}">Домашняя страница</a></li>
-                        <li><a href="{% url 'books' %}">Все книги</a></li>
-                        <li><a href="{% url 'authors' %}">Все авторы</a></li>
                         <br><hr>
                         {% if user.is_authenticated %}
                             <li>Пользователь: {{ user.get_username }}</li>
