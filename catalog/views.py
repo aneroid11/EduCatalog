@@ -3,7 +3,7 @@ import uuid
 
 from django.shortcuts import render, get_object_or_404, reverse
 from django.urls import reverse_lazy
-from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
+from django.http import HttpRequest, HttpResponse, HttpResponseRedirect, Http404, FileResponse
 from django.views import generic
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
@@ -36,6 +36,13 @@ def index(request: HttpRequest) -> HttpResponse:
     }
 
     return render(request, "catalog/index.html", context)
+
+
+def sample_pdf_view(request: HttpRequest) -> FileResponse:
+    try:
+        return FileResponse(open("pdfmaterials/sample_pdf.pdf", "rb"), content_type="application/pdf")
+    except FileNotFoundError:
+        raise Http404()
 
 
 @login_required

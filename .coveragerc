@@ -1,5 +1,9 @@
 [run]
-omit = catalog/migrations/*
+omit =
+    */migrations/*
+    */__init__.py
 
 [report]
-omit = catalog/migrations/*
+omit =
+    */migrations/*
+    */__init__.py
