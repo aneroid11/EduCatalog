@@ -1,6 +1,7 @@
 import datetime
 import uuid
 
+from django.conf import settings
 from django.shortcuts import render, get_object_or_404, reverse
 from django.urls import reverse_lazy
 from django.http import HttpRequest, HttpResponse, HttpResponseRedirect, Http404, FileResponse
@@ -38,9 +39,11 @@ def index(request: HttpRequest) -> HttpResponse:
     return render(request, "catalog/index.html", context)
 
 
-def sample_pdf_view(request: HttpRequest) -> FileResponse:
+def sample_pdf_view(request: HttpRequest):
+    file_path = settings.BASE_DIR / "catalog/pdfmaterials/sample_pdf.pdf"
+
     try:
-        return FileResponse(open("pdfmaterials/sample_pdf.pdf", "rb"), content_type="application/pdf")
+        return FileResponse(open(file_path, "rb"), content_type="application/pdf")
     except FileNotFoundError:
         raise Http404()
 
