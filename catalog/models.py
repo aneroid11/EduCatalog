@@ -5,7 +5,7 @@ from django.shortcuts import reverse
 class EduMaterial(models.Model):
     title = models.CharField(max_length=200, verbose_name="Название")
     summary = models.TextField(max_length=1000, verbose_name="Описание")
-    author = models.ForeignKey('Author', on_delete=models.SET_NULL)
+    author = models.ForeignKey('Author', null=True, on_delete=models.SET_NULL)
 
     ACCESS_TYPE = (
         ('e', 'Доступен всем'),
