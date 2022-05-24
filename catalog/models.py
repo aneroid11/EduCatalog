@@ -5,7 +5,7 @@ from django.shortcuts import reverse
 class EduMaterial(models.Model):
     title = models.CharField(max_length=200, verbose_name="Название")
     summary = models.TextField(max_length=1000, verbose_name="Описание")
-    author = models.ForeignKey('Author', null=True, on_delete=models.SET_NULL)
+    author = models.ForeignKey('Author', verbose_name="Автор", null=True, on_delete=models.SET_NULL)
 
     ACCESS_TYPE = (
         ('e', 'Доступен всем'),
@@ -32,15 +32,10 @@ class Author(models.Model):
 class Category(models.Model):
     name = models.CharField(verbose_name="Название категории", max_length=100)
     info = models.TextField(verbose_name="Описание категории", max_length=1000)
+    parent_category = models.ForeignKey('Category',
+                                        null=True,
+                                        verbose_name="Принадлежит к категории",
+                                        on_delete=models.CASCADE)
 
     def get_absolute_url(self):
         return reverse('category-detail', args=[str(self.id)])
-
-
-class Subcategory(models.Model):
-    name = models.CharField(verbose_name="Название подкатегории", max_length=100)
-    info = models.TextField(verbose_name="Описание подкатегории", max_length=1000)
-    category = models.ForeignKey(Category, on_delete=models.CASCADE)
-
-    def get_absolute_url(self):
-        return reverse('subcategory-detail', args=[str(self.id)])
