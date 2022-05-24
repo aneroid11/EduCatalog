@@ -49,3 +49,8 @@
     background-color: blueviolet;
     color: white;
 }
+
+.topnav a.right {
+    float: right;
+    background-color: blueviolet;
+}
