@@ -15,6 +15,9 @@ from .models import Book, BookInstance, Author, Genre
 from .forms import RenewBookForm
 
 
+logger = logging.getLogger(__name__)
+
+
 def index(request: HttpRequest) -> HttpResponse:
     num_books = Book.objects.count()
     num_instances = BookInstance.objects.count()
@@ -41,6 +44,8 @@ def index(request: HttpRequest) -> HttpResponse:
 
 
 def sample_pdf_view(request: HttpRequest):
+    logger.warning("Creating sample pdf view")
+
     file_path = settings.BASE_DIR / "catalog/pdfmaterials/sample_pdf.pdf"
 
     try:
