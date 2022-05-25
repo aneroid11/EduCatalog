@@ -4,7 +4,7 @@ from django.views.generic import TemplateView, ListView, DetailView
 from django.conf import settings
 from django.shortcuts import get_object_or_404
 
-from .models import Category, EduMaterial
+from .models import Category, EduMaterial, Author
 
 
 class MaterialFileView(View):
@@ -51,3 +51,15 @@ class EduMaterialDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         return context
+
+
+class AuthorListView(ListView):
+    model = Author
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        return context
+
+
+class AuthorDetailView(DetailView):
+    model = Author

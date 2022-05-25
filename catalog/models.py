@@ -31,6 +31,9 @@ class Author(models.Model):
     last_name = models.CharField(verbose_name="Фамилия", max_length=100)
     info = models.TextField(verbose_name="Информация", max_length=1000)
 
+    class Meta:
+        ordering = ["-last_name"]
+
     def __str__(self):
         return self.first_name + " " + self.last_name
 

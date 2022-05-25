@@ -1,11 +1,11 @@
 {% extends "catalog/base_generic.html" %}
 
 {% block content %}
-    <h1>{{ edumaterial.title }} (<a href="">{{ edumaterial.author }}</a>)</h1>
+    <h1>{{ edumaterial.title }} (<a href="{{ edumaterial.author.get_absolute_url }}">{{ edumaterial.author }}</a>)</h1>
     <hr>
     <div class="multiline">{{ edumaterial.summary }}</div>
     <hr>
     <p><strong>{{ edumaterial.get_access_type_display }}</strong></p>
     <hr>
-    <p> <a href="{{ edumaterial.get_absolute_file_url }}">Файл</a></p>
+    <p> <a href="{{ edumaterial.get_absolute_file_url }}">PDF файл</a></p>
 {% endblock %}

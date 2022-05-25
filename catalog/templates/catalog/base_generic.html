@@ -19,7 +19,7 @@
          <div class="topnav">
              <a class="active" href="{% url 'index' %}">Главная страница</a>
              <a href="{% url 'category-list' %}">Категории</a>
-             <a href="">Авторы</a>
+             <a href="{% url 'author-list' %}">Авторы</a>
              <a class="right" href="">Войти в аккаунт</a>
          </div>
         {% block content %}
