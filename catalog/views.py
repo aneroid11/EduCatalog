@@ -1,5 +1,5 @@
 # from django.http import HttpResponse, HttpRequest
-from django.views.generic import TemplateView, ListView
+from django.views.generic import TemplateView, ListView, DetailView
 from .models import Category
 
 
@@ -13,6 +13,14 @@ class IndexView(TemplateView):
 
 
 class CategoriesView(ListView):
+    model = Category
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        return context
+
+
+class CategoryDetailView(DetailView):
     model = Category
 
     def get_context_data(self, **kwargs):

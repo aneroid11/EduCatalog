@@ -1,5 +1,15 @@
 {% extends "catalog/base_generic.html" %}
 
 {% block content %}
-    <h1>Список категорий</h1>
+    <h1>Основные категории:</h1>
+
+    <ul>
+        {% for category in category_list %}
+            {% if not category.parent_category %}
+                <h4><a href="{{ category.get_absolute_url }}">{{ category.name }}</a></h4>
+                <p>{{ category.info }}</p>
+                <br>
+            {% endif %}
+        {% endfor %}
+    </ul>
 {% endblock %}
