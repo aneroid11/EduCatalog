@@ -6,4 +6,5 @@ urlpatterns = [
     path("categories/", views.CategoriesView.as_view(), name="category-list"),
     path("category/<int:pk>", views.CategoryDetailView.as_view(), name="category-detail"),
     path("material/<int:pk>", views.EduMaterialDetailView.as_view(), name="edumaterial-detail"),
+    path("material/<int:pk>/file", views.MaterialFileView.as_view(), name="edumaterial-file"),
 ]

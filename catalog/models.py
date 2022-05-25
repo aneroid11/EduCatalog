@@ -22,6 +22,9 @@ class EduMaterial(models.Model):
     def get_absolute_url(self):
         return reverse('edumaterial-detail', args=[str(self.id)])
 
+    def get_absolute_file_url(self):
+        return reverse('edumaterial-file', args=[str(self.id)])
+
 
 class Author(models.Model):
     first_name = models.CharField(verbose_name="Имя", max_length=100)

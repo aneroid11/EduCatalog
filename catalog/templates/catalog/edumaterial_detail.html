@@ -7,5 +7,5 @@
     <hr>
     <p><strong>{{ edumaterial.get_access_type_display }}</strong></p>
     <hr>
-    <p> <a href="{{ edumaterial.pdf_file.url }}">Файл</a></p>
+    <p> <a href="{{ edumaterial.get_absolute_file_url }}">Файл</a></p>
 {% endblock %}
