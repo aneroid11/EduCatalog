@@ -3,7 +3,9 @@
 {% block content %}
     <h1>{{ edumaterial.title }} (<a href="">{{ edumaterial.author }}</a>)</h1>
     <hr>
-    <p><div class="multiline">{{ edumaterial.summary }}</div></p>
+    <div class="multiline">{{ edumaterial.summary }}</div>
     <hr>
-    <p>{{ edumaterial }}</p>
+    <p><strong>{{ edumaterial.get_access_type_display }}</strong></p>
+    <hr>
+    <p> <a href="{{ edumaterial.pdf_file.url }}">Файл</a></p>
 {% endblock %}

@@ -1,6 +1,19 @@
-# from django.http import HttpResponse, HttpRequest
+from django.http import HttpResponse, HttpRequest, FileResponse, Http404
+from django.views import View
 from django.views.generic import TemplateView, ListView, DetailView
+from django.conf import settings
+
 from .models import Category, EduMaterial
+
+
+class PdfFileView(View):
+    def get(self, request: HttpRequest, ) -> FileResponse:
+        file_path = settings.BASE_DIR / "catalog/pdfmaterials/sample_pdf.pdf"
+
+        try:
+            return FileResponse(open(file_path, "rb"), content_type="application/pdf")
+        except FileNotFoundError:
+            raise Http404()
 
 
 class IndexView(TemplateView):
