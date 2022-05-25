@@ -1,0 +1,9 @@
+{% extends "catalog/base_generic.html" %}
+
+{% block content %}
+    <h1>{{ edumaterial.title }} (<a href="">{{ edumaterial.author }}</a>)</h1>
+    <hr>
+    <p><div class="multiline">{{ edumaterial.summary }}</div></p>
+    <hr>
+    <p>{{ edumaterial }}</p>
+{% endblock %}

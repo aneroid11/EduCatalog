@@ -17,7 +17,7 @@
         <ul>
             {% for material in category.edumaterial_set.all %}
                 <hr>
-                <li><a href="{% url 'material-detail' %}">{{ material.title }}</a>
+                <li><a href="{{ material.get_absolute_url }}">{{ material.title }}</a>
                     (<a href="">{{ material.author }}</a>)</li>
             {% endfor %}
         </ul>
