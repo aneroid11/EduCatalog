@@ -1,5 +1,16 @@
 {% extends "catalog/base_generic.html" %}
 
 {% block content %}
-    <h1>Здесь должна быть подробная информация об авторе</h1>
+    <h1>{{ author.first_name }} {{ author.last_name }}</h1>
+    <div class="multiline">{{ author.info }}</div>
+    <hr>
+    {% if author.edumaterial_set.count > 0 %}
+        <ul>
+            {% for material in author.edumaterial_set.all %}
+                <li> <a href="{{ material.get_absolute_url }}">{{ material }}</a></li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>Этот автор пока не написал никаких материалов.</p>
+    {% endif %}
 {% endblock %}
