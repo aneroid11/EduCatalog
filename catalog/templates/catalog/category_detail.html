@@ -1,5 +1,13 @@
 {% extends "catalog/base_generic.html" %}
 
 {% block content %}
-    <h1>Пока что тут ничего нет.</h1>
+    <h1>{{ category.name }}</h1>
+    <p>{{ category.info }}</p>
+    <br>
+
+    {% for subcategory in category.category_set.all %}
+        <h4><a href="{{ subcategory.get_absolute_url }}">{{ subcategory.name }}</a></h4>
+        <p>{{ subcategory.info }}</p>
+        <br>
+    {% endfor %}
 {% endblock %}
