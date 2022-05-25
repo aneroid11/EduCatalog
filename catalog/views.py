@@ -1,4 +1,4 @@
-from django.http import HttpResponse, HttpRequest
+# from django.http import HttpResponse, HttpRequest
 from django.views.generic import TemplateView
 
 
