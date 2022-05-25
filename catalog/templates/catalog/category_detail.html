@@ -5,9 +5,20 @@
     <p>{{ category.info }}</p>
     <br>
 
-    {% for subcategory in category.category_set.all %}
-        <h4><a href="{{ subcategory.get_absolute_url }}">{{ subcategory.name }}</a></h4>
-        <p>{{ subcategory.info }}</p>
-        <br>
-    {% endfor %}
+    {% if category.category_set.count > 0 %}
+        {# If we have some subcategories #}
+        {% for subcategory in category.category_set.all %}
+            <h4><a href="{{ subcategory.get_absolute_url }}">{{ subcategory.name }}</a></h4>
+            <p>{{ subcategory.info }}</p>
+            <br>
+        {% endfor %}
+    {% else %}
+        {# If there is no subcategories, show the materials #}
+        <ul>
+            {% for material in category.edumaterial_set.all %}
+                <hr>
+                <li>{{ material.title }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
 {% endblock %}
