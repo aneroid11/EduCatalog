@@ -12,13 +12,13 @@
     <!-- Add additional CSS in static file -->
     {% load static %}
     <link rel="stylesheet"
-          href="{% static 'catalog/css/generic_styles.css' %}?pretend_version_number=09">
+          href="{% static 'catalog/css/generic_styles.css' %}?pretend_version_number=10">
 </head>
 <body>
     <div class="container-fluid">
          <div class="topnav">
              <a class="active" href="{% url 'index' %}">Главная страница</a>
-             <a href="">Категории</a>
+             <a href="{% url 'category-list' %}">Категории</a>
              <a href="">Авторы</a>
              <a class="right" href="">Войти в аккаунт</a>
          </div>
