@@ -69,6 +69,13 @@ class SearchView(ListView):
     model = EduMaterial
     template_name = "catalog/search.html"
 
+    def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
+        return super().get(request, *args, **kwargs)
+
+    def get_queryset(self):
+        usr_query = self.request.GET['usr_query']
+        return EduMaterial.objects.filter(title__icontains=usr_query)
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         return context

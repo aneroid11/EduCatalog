@@ -1,5 +1,14 @@
 {% extends "catalog/base_generic.html" %}
 
 {% block content %}
-    <h1>Здесь должны отображаться результаты поиска.</h1>
+    <h1>Результаты поиска</h1>
+    <br>
+
+    {% if edumaterial_list.count > 0 %}
+        {% for material in edumaterial_list %}
+            <p>{{ material }}</p>
+        {% endfor %}
+    {% else %}
+        <p>По вашему запросу ничего не найдено.</p>
+    {% endif %}
 {% endblock %}
