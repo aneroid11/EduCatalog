@@ -12,7 +12,7 @@
     <!-- Add additional CSS in static file -->
     {% load static %}
     <link rel="stylesheet"
-          href="{% static 'catalog/css/generic_styles.css' %}?pretend_version_number=10">
+          href="{% static 'catalog/css/generic_styles.css' %}?pretend_version_number=12">
 </head>
 <body>
     <div class="container-fluid">
@@ -20,7 +20,13 @@
              <a class="active" href="{% url 'index' %}">Главная страница</a>
              <a href="{% url 'category-list' %}">Категории</a>
              <a href="{% url 'author-list' %}">Авторы</a>
-             <a class="right" href="">Войти в аккаунт</a>
+             {% if not user.is_authenticated %}
+                 <a class="right" href="{% url 'login' %}">Войти в аккаунт</a>
+             {% else %}
+                 {# should show user detail here #}
+                 <a class="right" href="{% url 'logout' %}">Выйти</a>
+                 <a class="right" href="">{{ user }}</a>
+             {% endif %}
          </div>
         {% block content %}
         {% endblock %}
