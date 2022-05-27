@@ -1,7 +1,7 @@
 {% extends "catalog/base_generic.html" %}
 
 {% block content %}
-    <h1>Результаты поиска</h1>
+    <h1>Search results</h1>
     <br>
 
     {% if edumaterial_list.count > 0 %}
@@ -12,6 +12,6 @@
             <p>{{ material.summary }}</p>
         {% endfor %}
     {% else %}
-        <p>По вашему запросу ничего не найдено.</p>
+        <p>Nothing found!</p>
     {% endif %}
 {% endblock %}

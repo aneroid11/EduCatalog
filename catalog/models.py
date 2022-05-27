@@ -3,18 +3,18 @@ from django.shortcuts import reverse
 
 
 class EduMaterial(models.Model):
-    title = models.CharField(max_length=200, verbose_name="Название")
-    summary = models.TextField(max_length=1000, verbose_name="Описание")
-    author = models.ForeignKey('Author', verbose_name="Автор", null=True, on_delete=models.SET_NULL)
+    title = models.CharField(max_length=200)
+    summary = models.TextField(max_length=1000)
+    author = models.ForeignKey('Author', null=True, on_delete=models.SET_NULL)
 
     ACCESS_TYPE = (
-        ('e', 'Доступен всем'),
-        ('s', 'Доступен только зарегистрированным'),
-        ('p', 'Только для премиум'),
+        ('e', 'Everybody can access'),
+        ('s', 'Sign up to access'),
+        ('p', 'For premium users'),
     )
-    access_type = models.CharField(max_length=1, choices=ACCESS_TYPE, default='e', verbose_name="Доступ")
-    pdf_file = models.FileField(verbose_name="Файл", upload_to="pdfmaterials/")
-    category = models.ManyToManyField('Category', verbose_name="Категория")
+    access_type = models.CharField(max_length=1, choices=ACCESS_TYPE, default='e')
+    pdf_file = models.FileField(upload_to="pdfmaterials/")
+    category = models.ManyToManyField('Category')
 
     def __str__(self):
         return self.title
@@ -27,9 +27,9 @@ class EduMaterial(models.Model):
 
 
 class Author(models.Model):
-    first_name = models.CharField(verbose_name="Имя", max_length=100)
-    last_name = models.CharField(verbose_name="Фамилия", max_length=100)
-    info = models.TextField(verbose_name="Информация", max_length=1000)
+    first_name = models.CharField(max_length=100)
+    last_name = models.CharField(max_length=100)
+    info = models.TextField(max_length=1000)
 
     class Meta:
         ordering = ["-last_name"]
@@ -42,11 +42,10 @@ class Author(models.Model):
 
 
 class Category(models.Model):
-    name = models.CharField(verbose_name="Название категории", max_length=100)
-    info = models.TextField(verbose_name="Описание категории", max_length=1000)
+    name = models.CharField(max_length=100)
+    info = models.TextField(max_length=1000)
     parent_category = models.ForeignKey('Category',
                                         null=True, blank=True,
-                                        verbose_name="Принадлежит к категории",
                                         on_delete=models.CASCADE)
 
     def __str__(self):

@@ -3,28 +3,28 @@
 {% block content %}
     <br>
     {% if form.errors %}
-        <p>Ваши логин и/или пароль не подходят. Попробуйте ещё раз.</p>
+        <p>Your login and/or password do not match.</p>
     {% endif %}
 
     <form method="post" action="{% url 'login' %}">
         {% csrf_token %}
         <table>
             <tr>
-                <td>Логин: </td>
+                <td>{{ form.username.label }}</td>
                 <td>{{ form.username }}</td>
             </tr>
             <tr>
-                <td>Пароль: </td>
+                <td>{{ form.password.label }}</td>
                 <td>{{ form.password }}</td>
             </tr>
         </table>
         <br>
-        <input type="submit" value="Войти" />
+        <input type="submit" value="Enter" />
         <input type="hidden" name="next" value="{{ next }}" />
     </form>
 
     <br>
     {# Assumes you setup the password_reset view in your URLconf #}
-    <p><a href="{% url 'password_reset' %}">Забыли пароль?</a></p>
+    <p><a href="{% url 'password_reset' %}">Forgot your password?</a></p>
 
 {% endblock %}
