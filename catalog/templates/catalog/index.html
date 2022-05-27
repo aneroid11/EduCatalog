@@ -1,8 +1,6 @@
 {% extends "catalog/base_generic.html" %}
 
 {% block content %}
-    <!-- <div class="centered">
-        <div style="text-align: center"> -->
     <h1>Добро пожаловать!</h1>
     <p>Здесь вы сможете найти туториалы и материалы по самым разным темам, актуальным для студентов
         технических вузов: физика, математика, схемотехника, программирование и так далее.</p>
@@ -10,14 +8,10 @@
     <form class="search" action="{% url 'search-material' %}" method='get'>
         <label>
             <input type="search"
-                   placeholder="Search here..."
+                   placeholder="Введите ключевое слово..."
                    name="usr_query"
                    value='{{ query }}' required>
         </label>
-        <button type="submit">Search</button>
+        <button type="submit">Поиск</button>
     </form>
-
-
-        <!-- </div>
-    </div> -->
 {% endblock %}

@@ -6,7 +6,10 @@
 
     {% if edumaterial_list.count > 0 %}
         {% for material in edumaterial_list %}
-            <p>{{ material }}</p>
+            <hr>
+            <p><a href="{{ material.get_absolute_url }}">{{ material.title }}</a>
+                (<a href="{{ material.author.get_absolute_url }}">{{ material.author }}</a>)</p>
+            <p>{{ material.summary }}</p>
         {% endfor %}
     {% else %}
         <p>По вашему запросу ничего не найдено.</p>

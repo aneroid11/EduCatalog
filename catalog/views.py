@@ -74,7 +74,9 @@ class SearchView(ListView):
 
     def get_queryset(self):
         usr_query = self.request.GET['usr_query']
-        return EduMaterial.objects.filter(title__icontains=usr_query)
+        filtered_objects = EduMaterial.objects.filter(title__icontains=usr_query) | \
+                           EduMaterial.objects.filter(summary__icontains=usr_query)
+        return filtered_objects
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
