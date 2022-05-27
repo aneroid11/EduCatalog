@@ -1,17 +1,28 @@
 from django.http import HttpResponse, HttpRequest, FileResponse, Http404
+
 from django.views import View
+from django.contrib.messages.views import SuccessMessageMixin
 from django.views.generic import TemplateView, ListView, DetailView
+from django.views.generic.edit import CreateView
 from django.conf import settings
 from django.shortcuts import get_object_or_404
+from django.urls import reverse_lazy
 
 from .models import Category, EduMaterial, Author
+from .forms import UserRegisterForm
+
+
+class SignUpView(SuccessMessageMixin, CreateView):
+    template_name = "registration/register.html"
+    success_url = reverse_lazy('login')
+    form_class = UserRegisterForm
+    success_message = "Your account was created successfully!"
 
 
 class MaterialFileView(View):
     def get(self, request: HttpRequest, pk: int) -> FileResponse:
         material = get_object_or_404(EduMaterial, pk=pk)
 
-        # file_path = settings.BASE_DIR / "catalog/pdfmaterials/sample_pdf.pdf"
         file_path = settings.BASE_DIR / material.pdf_file.path
 
         try:
