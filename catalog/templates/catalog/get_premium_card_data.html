@@ -1,5 +1,10 @@
 {% extends "catalog/base_generic.html" %}
 
 {% block content %}
-    <h1>Here, you need to provide all your credit card data.</h1>
+    <h1>Premium will cost all money that you have on your credit card.</h1>
+    <form action="" method="post">
+        {% csrf_token %}
+        <p>{{ form.as_p }}</p>
+        <input type="submit" value="Get premium!">
+    </form>
 {% endblock %}
