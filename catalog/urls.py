@@ -12,4 +12,5 @@ urlpatterns = [
     path("search-material", views.SearchView.as_view(), name='search-material'),
     path('signup', views.SignUpView.as_view(), name='signup'),
     path('accounts/', include('django.contrib.auth.urls')),
+    path('something-async', views.async_view, name='something-async')
 ]

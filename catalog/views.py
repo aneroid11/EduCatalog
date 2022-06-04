@@ -1,3 +1,5 @@
+import asyncio
+
 from django.http import HttpResponse, HttpRequest, FileResponse, Http404
 
 from django.views import View
@@ -10,6 +12,21 @@ from django.urls import reverse_lazy
 
 from .models import Category, EduMaterial, Author
 from .forms import UserRegisterForm
+
+
+async def notify_user(user_num):
+    print("send email to user", user_num)
+    await asyncio.sleep(user_num)
+    print("sent email to user", user_num, "successfully")
+
+
+async def async_view(request: HttpRequest) -> HttpResponse:
+    loop = asyncio.get_event_loop()
+
+    for num in range(10):
+        loop.create_task(notify_user(num))
+
+    return HttpResponse("Yes, I am async!")
 
 
 class SignUpView(SuccessMessageMixin, CreateView):
