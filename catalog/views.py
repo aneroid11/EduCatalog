@@ -20,12 +20,21 @@ async def notify_user(user_num):
     print("sent email to user", user_num, "successfully")
 
 
+async def notify_users_about_category_update(category_name: str):
+    print("notify users that the", category_name, "category was updated")
+
+    tasks = []
+
+    for i in range(10):
+        tasks.append(notify_user(i))
+
+    await asyncio.gather(*tasks)
+    print("finished notifying")
+
+
 async def async_view(request: HttpRequest) -> HttpResponse:
     loop = asyncio.get_event_loop()
-
-    for num in range(10):
-        loop.create_task(notify_user(num))
-
+    loop.create_task(notify_users_about_category_update("math"))
     return HttpResponse("Yes, I am async!")
 
 
