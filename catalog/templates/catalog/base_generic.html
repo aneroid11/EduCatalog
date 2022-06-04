@@ -29,7 +29,7 @@
                  <a class="right">{{ user }}</a>
 
                  {% if not perms.catalog.can_view_premium %}
-                    <a class="right" href="">Get premium!</a>
+                    <a class="right" href="{% url 'get-premium' %}">Get premium!</a>
                  {% endif %}
              {% endif %}
          </div>

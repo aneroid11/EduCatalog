@@ -6,13 +6,13 @@ from django.core.exceptions import PermissionDenied
 from django.views import View
 from django.contrib.messages.views import SuccessMessageMixin
 from django.views.generic import TemplateView, ListView, DetailView
-from django.views.generic.edit import CreateView
+from django.views.generic.edit import CreateView, FormView
 from django.conf import settings
 from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
 
 from .models import Category, EduMaterial, Author
-from .forms import UserRegisterForm
+from .forms import UserRegisterForm, GetUserCardDataForm
 
 
 async def notify_user(user_num):
@@ -128,3 +128,10 @@ class SearchView(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         return context
+
+
+class GetPremiumView(FormView):
+    template_name = "catalog/get_premium_card_data.html"
+    form_class = GetUserCardDataForm
+    # success_url = reverse_lazy('get-premium-thanks')
+    success_url = reverse_lazy('index')
