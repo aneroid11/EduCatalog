@@ -26,7 +26,11 @@
              {% else %}
                  {# should show user detail here #}
                  <a class="right" href="{% url 'logout' %}">Log out</a>
-                 <a class="right" href="">{{ user }}</a>
+                 <a class="right">{{ user }}</a>
+
+                 {% if not perms.catalog.can_view_premium %}
+                    <a class="right" href="">Get premium!</a>
+                 {% endif %}
              {% endif %}
          </div>
         {% block content %}

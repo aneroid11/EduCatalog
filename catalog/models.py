@@ -16,6 +16,9 @@ class EduMaterial(models.Model):
     pdf_file = models.FileField(upload_to="pdfmaterials/")
     category = models.ManyToManyField('Category')
 
+    class Meta:
+        permissions = (("can_view_premium", "View premium materials"),)
+
     def __str__(self):
         return self.title
 
