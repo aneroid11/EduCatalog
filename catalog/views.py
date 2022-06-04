@@ -5,6 +5,8 @@ from django.core.exceptions import PermissionDenied
 
 from django.views import View
 from django.contrib.messages.views import SuccessMessageMixin
+from django.contrib.auth.models import Permission
+from django.contrib.contenttypes.models import ContentType
 from django.views.generic import TemplateView, ListView, DetailView
 from django.views.generic.edit import CreateView, FormView
 from django.conf import settings
@@ -133,5 +135,17 @@ class SearchView(ListView):
 class GetPremiumView(FormView):
     template_name = "catalog/get_premium_card_data.html"
     form_class = GetUserCardDataForm
-    # success_url = reverse_lazy('get-premium-thanks')
-    success_url = reverse_lazy('index')
+    success_url = reverse_lazy('get-premium-thanks')
+
+    def form_valid(self, form):
+        # This method is called when valid form data has been POSTed.
+        # It should return an HttpResponse.
+        content_type = ContentType.objects.get_for_model(EduMaterial)
+        permission = Permission.objects.get(codename="can_view_premium", content_type=content_type)
+        self.request.user.user_permissions.add(permission)
+
+        return super().form_valid(form)
+
+
+class GetPremiumThanksView(TemplateView):
+    template_name = "catalog/get_premium_thanks.html"

@@ -13,6 +13,6 @@ urlpatterns = [
     path('signup', views.SignUpView.as_view(), name='signup'),
     path('accounts/', include('django.contrib.auth.urls')),
     path('get-premium', views.GetPremiumView.as_view(), name='get-premium'),
-    # path('get-premium-thanks', views.GetPremiumThanksView.as_view(), name='get-premium-thanks'),
+    path('get-premium-thanks', views.GetPremiumThanksView.as_view(), name='get-premium-thanks'),
     path('something-async', views.async_view, name='something-async'),
 ]
