@@ -18,7 +18,9 @@
             {% for material in category.edumaterial_set.all %}
                 <hr>
                 <li><a href="{{ material.get_absolute_url }}">{{ material.title }}</a>
-                    (<a href="{{ material.author.get_absolute_url }}">{{ material.author }}</a>)</li>
+                    (<a href="{{ material.author.get_absolute_url }}">{{ material.author }}</a>) -
+                    <strong>{{ material.get_access_type_display }}</strong>
+                </li>
             {% endfor %}
         </ul>
     {% endif %}
