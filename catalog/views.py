@@ -1,6 +1,7 @@
 import asyncio
 
 from django.http import HttpResponse, HttpRequest, FileResponse, Http404
+from django.core.exceptions import PermissionDenied
 
 from django.views import View
 from django.contrib.messages.views import SuccessMessageMixin
@@ -48,6 +49,13 @@ class SignUpView(SuccessMessageMixin, CreateView):
 class MaterialFileView(View):
     def get(self, request: HttpRequest, pk: int) -> FileResponse:
         material = get_object_or_404(EduMaterial, pk=pk)
+
+        if material.access_type == "s":
+            if not request.user.is_authenticated:
+                raise PermissionDenied
+        elif material.access_type == "p":
+            if not request.user.is_authenticated:  # OR if user is not premium (I need to implement this)
+                raise PermissionDenied
 
         file_path = settings.BASE_DIR / material.pdf_file.path
 
