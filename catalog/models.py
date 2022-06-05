@@ -1,5 +1,6 @@
 from django.db import models
 from django.shortcuts import reverse
+from django.contrib.auth.models import User
 
 
 class EduMaterial(models.Model):
@@ -30,6 +31,7 @@ class EduMaterial(models.Model):
 
 
 class Author(models.Model):
+    user = models.OneToOneField(User, on_delete=models.SET_NULL, null=True)
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
     info = models.TextField(max_length=1000)
