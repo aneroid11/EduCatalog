@@ -26,9 +26,15 @@
              {% else %}
                  {# should show user detail here #}
                  <a class="right" href="{% url 'logout' %}">Log out</a>
-                 <a class="right">{{ user }}</a>
 
-                 {% if not perms.catalog.can_view_premium %}
+                 {% if user.author %}
+                     <a class="right" href="{{ user.author.get_absolute_url }}">{{ user }}</a>
+                     <a class="right" href="">Add material</a>
+                 {% else %}
+                     <a class="right">{{ user }}</a>
+                 {% endif %}
+
+                 {% if not perms.catalog.can_view_premium and not user.author %}
                     <a class="right" href="{% url 'get-premium' %}">Get premium!</a>
                  {% endif %}
              {% endif %}
