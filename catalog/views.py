@@ -1,9 +1,9 @@
-import asyncio
+import threading
 
 from django.http import HttpResponse, HttpRequest, FileResponse, Http404
 from django.core.exceptions import PermissionDenied
-from django.utils.decorators import classonlymethod
-
+from django import forms
+from django.core.mail import send_mass_mail
 from django.views import View
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib.auth.models import Permission
@@ -18,28 +18,11 @@ from .models import Category, EduMaterial, Author
 from .forms import UserRegisterForm, GetUserCardDataForm
 
 
-async def notify_user(user_num):
-    print("send email to user", user_num)
-    await asyncio.sleep(user_num)
-    print("sent email to user", user_num, "successfully")
-
-
-async def notify_users_about_category_update(category_name: str):
-    print("notify users that the", category_name, "category was updated")
-
-    tasks = []
-
-    for i in range(10):
-        tasks.append(notify_user(i))
-
-    await asyncio.gather(*tasks)
+def notify_users_about_category_update(category_name: str):
+    print("notify users about category update:", category_name)
+    for i in range(1000000):
+        print("sending some mail...")
     print("finished notifying")
-
-
-async def async_view(request: HttpRequest) -> HttpResponse:
-    loop = asyncio.get_event_loop()
-    loop.create_task(notify_users_about_category_update("math"))
-    return HttpResponse("Yes, I am async!")
 
 
 class SignUpView(SuccessMessageMixin, CreateView):
@@ -93,11 +76,11 @@ class EduMaterialCreateView(CreateView):
         super().__init__(**kwargs)
         self.category_to_update = None
 
-    @classonlymethod
+    """"@classonlymethod
     def as_view(cls, **kwargs):
         view = super().as_view(**kwargs)
         view._is_coroutine = asyncio.coroutines.iscoroutine
-        return view
+        return view"""
 
     def get_form(self, *args, **kwargs):
         form = super(EduMaterialCreateView, self).get_form(*args, **kwargs)
@@ -108,13 +91,13 @@ class EduMaterialCreateView(CreateView):
 
         return form
 
-    """async def form_valid(self, form):
-        # This method is called when valid form data has been POSTed.
-        # It should return an HttpResponse.
+    def form_valid(self, form: forms.Form) -> HttpResponse:
         responce = super().form_valid(form)
-        loop = asyncio.get_event_loop()
-        loop.create_task(notify_users_about_category_update("math"))
-        return responce"""
+
+        thread = threading.Thread(target=notify_users_about_category_update, args=(self.category_to_update,))
+        thread.start()
+
+        return responce
 
 
 class AuthorListView(ListView):
