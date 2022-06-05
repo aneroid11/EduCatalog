@@ -1,4 +1,6 @@
 from django.urls import path, include
+from django.conf.urls.static import static
+from django.conf import settings
 from . import views
 
 urlpatterns = [
@@ -15,4 +17,4 @@ urlpatterns = [
     path('get-premium', views.GetPremiumView.as_view(), name='get-premium'),
     path('get-premium-thanks', views.GetPremiumThanksView.as_view(), name='get-premium-thanks'),
     path('something-async', views.async_view, name='something-async'),
-]
+] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
