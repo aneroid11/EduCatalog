@@ -29,7 +29,7 @@
 
                  {% if user.author %}
                      <a class="right" href="{{ user.author.get_absolute_url }}">{{ user }}</a>
-                     <a class="right" href="">Add material</a>
+                     <a class="right" href="{% url 'edumaterial-create' %}">Add material</a>
                  {% else %}
                      <a class="right">{{ user }}</a>
                  {% endif %}

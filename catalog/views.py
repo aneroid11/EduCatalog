@@ -96,9 +96,18 @@ class CategoryDetailView(DetailView):
 class EduMaterialDetailView(DetailView):
     model = EduMaterial
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        return context
+
+class EduMaterialCreateView(CreateView):
+    model = EduMaterial
+    fields = ['title', 'summary', 'access_type', 'pdf_file', 'category', 'author']
+
+    def get_form(self, *args, **kwargs):
+        form = super(EduMaterialCreateView, self).get_form(*args, **kwargs)
+        form.fields['category'].queryset = Category.objects.filter(category__isnull=True)
+
+        EduMaterialCreateView.initial = {'author': self.request.user.author}
+
+        return form
 
 
 class AuthorListView(ListView):
