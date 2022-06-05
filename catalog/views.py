@@ -2,6 +2,7 @@ import asyncio
 
 from django.http import HttpResponse, HttpRequest, FileResponse, Http404
 from django.core.exceptions import PermissionDenied
+from django.utils.decorators import classonlymethod
 
 from django.views import View
 from django.contrib.messages.views import SuccessMessageMixin
@@ -71,26 +72,13 @@ class MaterialFileView(View):
 class IndexView(TemplateView):
     template_name = "catalog/index.html"
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        # some more operations with context
-        return context
-
 
 class CategoriesView(ListView):
     model = Category
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        return context
-
 
 class CategoryDetailView(DetailView):
     model = Category
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        return context
 
 
 class EduMaterialDetailView(DetailView):
@@ -101,21 +89,36 @@ class EduMaterialCreateView(CreateView):
     model = EduMaterial
     fields = ['title', 'summary', 'access_type', 'pdf_file', 'category', 'author']
 
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.category_to_update = None
+
+    @classonlymethod
+    def as_view(cls, **kwargs):
+        view = super().as_view(**kwargs)
+        view._is_coroutine = asyncio.coroutines.iscoroutine
+        return view
+
     def get_form(self, *args, **kwargs):
         form = super(EduMaterialCreateView, self).get_form(*args, **kwargs)
         form.fields['category'].queryset = Category.objects.filter(category__isnull=True)
+        self.category_to_update = str(form.fields['category'])
 
         EduMaterialCreateView.initial = {'author': self.request.user.author}
 
         return form
 
+    """async def form_valid(self, form):
+        # This method is called when valid form data has been POSTed.
+        # It should return an HttpResponse.
+        responce = super().form_valid(form)
+        loop = asyncio.get_event_loop()
+        loop.create_task(notify_users_about_category_update("math"))
+        return responce"""
+
 
 class AuthorListView(ListView):
     model = Author
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        return context
 
 
 class AuthorDetailView(DetailView):
@@ -136,10 +139,6 @@ class SearchView(ListView):
                            EduMaterial.objects.filter(author__first_name__icontains=usr_query) | \
                            EduMaterial.objects.filter(author__last_name__icontains=usr_query)
         return filtered_objects
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        return context
 
 
 class GetPremiumView(FormView):
