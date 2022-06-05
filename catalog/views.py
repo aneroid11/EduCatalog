@@ -56,7 +56,8 @@ class MaterialFileView(View):
             if not request.user.is_authenticated:
                 raise PermissionDenied
         elif material.access_type == "p":
-            if not request.user.is_authenticated or not request.user.has_perm("catalog.can_view_premium"):
+            if (not request.user.is_authenticated or not request.user.has_perm("catalog.can_view_premium")) \
+                    and request.user.author is None:
                 raise PermissionDenied
 
         file_path = settings.BASE_DIR / material.pdf_file.path
