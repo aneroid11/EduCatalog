@@ -19,9 +19,26 @@ from .models import Category, EduMaterial, Author
 from .forms import UserRegisterForm, GetUserCardDataForm
 
 
+def send_mail_about_category(category: Category):
+    users = [user for user in category.users_subscribed.all()]
+
+    subject = "Category '" + category.name + "' was updated"
+    msg = "The category was updated! Don't forget to check it out!"
+    message = (subject, msg, 'educatalogteam@example.com', users)
+    send_mass_mail((message,), fail_silently=False)
+
+
 def notify_users_about_category_update(category_name: str):
-    print("notify users about category update:", category_name)
-    print("finished notifying")
+    category = Category.objects.get(name__exact=category_name)
+
+    threads = [threading.Thread(target=send_mail_about_category, args=(category,))]
+
+    while category.parent_category is not None:
+        category = category.parent_category
+        threads.append(threading.Thread(target=send_mail_about_category, args=(category,)))
+
+    for t in threads:
+        t.start()
 
 
 class SignUpView(SuccessMessageMixin, CreateView):
