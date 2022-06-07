@@ -20,8 +20,6 @@ from .forms import UserRegisterForm, GetUserCardDataForm
 
 def notify_users_about_category_update(category_name: str):
     print("notify users about category update:", category_name)
-    for i in range(1000000):
-        print("sending some mail...")
     print("finished notifying")
 
 
@@ -94,7 +92,8 @@ class EduMaterialCreateView(CreateView):
     def form_valid(self, form: forms.Form) -> HttpResponse:
         responce = super().form_valid(form)
 
-        thread = threading.Thread(target=notify_users_about_category_update, args=(self.category_to_update,))
+        category_name = self.category_to_update
+        thread = threading.Thread(target=notify_users_about_category_update, args=(category_name,))
         thread.start()
 
         return responce
