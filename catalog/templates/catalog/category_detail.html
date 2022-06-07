@@ -25,5 +25,6 @@
         </ul>
     {% endif %}
 
-    <p><a href="">Subscribe to be notified when new materials appear in this category</a></p>
+    <p><a href="{{ category.get_absolute_url_for_subscribe }}">
+        Subscribe to be notified when new materials appear in this category</a></p>
 {% endblock %}

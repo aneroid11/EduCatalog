@@ -72,7 +72,7 @@ class SubscribeCategoryView(TemplateView, LoginRequiredMixin):
         category.users_subscribed.add(request.user)
         category.save()
 
-        return super(SubscribeCategoryView, self).get(*args, **kwargs)
+        return super(SubscribeCategoryView, self).get(request, *args, **kwargs)
 
 
 class EduMaterialDetailView(DetailView):
