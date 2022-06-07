@@ -86,8 +86,9 @@ class CategoryDetailView(DetailView):
     model = Category
 
 
-class SubscribeCategoryView(TemplateView, LoginRequiredMixin):
+class SubscribeCategoryView(LoginRequiredMixin, TemplateView):
     template_name = "catalog/subscribe_category.html"
+    login_url = reverse_lazy('login')
 
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         pk = kwargs['pk']
