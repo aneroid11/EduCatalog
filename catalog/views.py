@@ -7,6 +7,7 @@ from django.core.mail import send_mass_mail
 from django.views import View
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib.auth.models import Permission
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.contenttypes.models import ContentType
 from django.views.generic import TemplateView, ListView, DetailView
 from django.views.generic.edit import CreateView, FormView
@@ -62,6 +63,18 @@ class CategoryDetailView(DetailView):
     model = Category
 
 
+class SubscribeCategoryView(TemplateView, LoginRequiredMixin):
+    template_name = "catalog/subscribe_category.html"
+
+    def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
+        pk = kwargs['pk']
+        category = get_object_or_404(Category, pk=pk)
+        category.users_subscribed.add(request.user)
+        category.save()
+
+        return super(SubscribeCategoryView, self).get(*args, **kwargs)
+
+
 class EduMaterialDetailView(DetailView):
     model = EduMaterial
 
@@ -73,12 +86,6 @@ class EduMaterialCreateView(CreateView):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.category_to_update = None
-
-    """"@classonlymethod
-    def as_view(cls, **kwargs):
-        view = super().as_view(**kwargs)
-        view._is_coroutine = asyncio.coroutines.iscoroutine
-        return view"""
 
     def get_form(self, *args, **kwargs):
         form = super(EduMaterialCreateView, self).get_form(*args, **kwargs)

@@ -7,6 +7,7 @@ urlpatterns = [
     path("", views.IndexView.as_view(), name="index"),
     path("categories", views.CategoriesView.as_view(), name="category-list"),
     path("category/<int:pk>", views.CategoryDetailView.as_view(), name="category-detail"),
+    path("category/<int:pk>/subscribe", views.SubscribeCategoryView.as_view(), name="category-subscribe"),
     path("material/create", views.EduMaterialCreateView.as_view(), name='edumaterial-create'),
     path("material/<int:pk>", views.EduMaterialDetailView.as_view(), name="edumaterial-detail"),
     path("material/<int:pk>/file", views.MaterialFileView.as_view(), name="edumaterial-file"),

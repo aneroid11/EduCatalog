@@ -52,9 +52,13 @@ class Category(models.Model):
     parent_category = models.ForeignKey('Category',
                                         null=True, blank=True,
                                         on_delete=models.CASCADE)
+    users_subscribed = models.ManyToManyField(User)
 
     def __str__(self):
         return self.name
+
+    def get_absolute_url_for_subscribe(self):
+        return reverse('category-subscribe', args=[str(self.id)])
 
     def get_absolute_url(self):
         return reverse('category-detail', args=[str(self.id)])
