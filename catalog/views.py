@@ -19,8 +19,11 @@ from .models import Category, EduMaterial, Author
 from .forms import UserRegisterForm, GetUserCardDataForm
 
 
-def send_mail_about_category(category: Category):
-    users = [user for user in category.users_subscribed.all()]
+def send_notify_about_category(category: Category):
+    users = [user.email for user in category.users_subscribed.all()]
+
+    if len(users) == 0:
+        return
 
     subject = "Category '" + category.name + "' was updated"
     msg = "The category was updated! Don't forget to check it out!"
@@ -29,13 +32,16 @@ def send_mail_about_category(category: Category):
 
 
 def notify_users_about_category_update(category_name: str):
+    print(category_name)
+    print("updated")
+
     category = Category.objects.get(name__exact=category_name)
 
-    threads = [threading.Thread(target=send_mail_about_category, args=(category,))]
+    threads = [threading.Thread(target=send_notify_about_category, args=(category,))]
 
     while category.parent_category is not None:
         category = category.parent_category
-        threads.append(threading.Thread(target=send_mail_about_category, args=(category,)))
+        threads.append(threading.Thread(target=send_notify_about_category, args=(category,)))
 
     for t in threads:
         t.start()
@@ -116,9 +122,21 @@ class EduMaterialCreateView(CreateView):
     def form_valid(self, form: forms.Form) -> HttpResponse:
         responce = super().form_valid(form)
 
-        category_name = self.category_to_update
-        thread = threading.Thread(target=notify_users_about_category_update, args=(category_name,))
-        thread.start()
+        categories_to_update = form.cleaned_data['category']
+        threads = []
+
+        for category in categories_to_update:
+            threads.append(
+                threading.Thread(target=send_notify_about_category, args=(category,))
+            )
+            while category.parent_category is not None:
+                category = category.parent_category
+                threads.append(
+                    threading.Thread(target=send_notify_about_category, args=(category,))
+                )
+
+        for thread in threads:
+            thread.start()
 
         return responce
 
