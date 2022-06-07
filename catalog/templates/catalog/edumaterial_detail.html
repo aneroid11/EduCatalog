@@ -7,5 +7,12 @@
     <hr>
     <p><strong>{{ edumaterial.get_access_type_display }}</strong></p>
     <hr>
-    <p> <a href="{{ edumaterial.get_absolute_file_url }}">PDF file</a></p>
+    <p><a href="{{ edumaterial.get_absolute_file_url }}">PDF file</a></p>
+    <hr>
+    {% if user.author %}
+        {% if user.author == edumaterial.author %}
+            <p><a href="">Delete material</a></p>
+            <p><a href="">Edit material</a></p>
+        {% endif %}
+    {% endif %}
 {% endblock %}
