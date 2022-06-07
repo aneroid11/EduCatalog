@@ -108,12 +108,10 @@ class EduMaterialCreateView(CreateView):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.category_to_update = None
 
     def get_form(self, *args, **kwargs):
         form = super(EduMaterialCreateView, self).get_form(*args, **kwargs)
         form.fields['category'].queryset = Category.objects.filter(category__isnull=True)
-        self.category_to_update = str(form.fields['category'])
 
         EduMaterialCreateView.initial = {'author': self.request.user.author}
 
@@ -121,21 +119,17 @@ class EduMaterialCreateView(CreateView):
 
     def form_valid(self, form: forms.Form) -> HttpResponse:
         responce = super().form_valid(form)
+        categories_to_update = []
 
-        categories_to_update = form.cleaned_data['category']
-        threads = []
+        for category in form.cleaned_data['category']:
+            while category is not None:
+                if category not in categories_to_update:
+                    categories_to_update.append(category)
+
+                category = category.parent_category
 
         for category in categories_to_update:
-            threads.append(
-                threading.Thread(target=send_notify_about_category, args=(category,))
-            )
-            while category.parent_category is not None:
-                category = category.parent_category
-                threads.append(
-                    threading.Thread(target=send_notify_about_category, args=(category,))
-                )
-
-        for thread in threads:
+            thread = threading.Thread(target=send_notify_about_category, args=(category,))
             thread.start()
 
         return responce
