@@ -11,8 +11,8 @@
     <hr>
     {% if user.author %}
         {% if user.author == edumaterial.author %}
-            <p><a href="">Delete material</a></p>
-            <p><a href="">Edit material</a></p>
+            <p><a href="{% url 'edumaterial-delete' edumaterial.id %}">Delete material</a></p>
+            <p><a href="{% url 'edumaterial-edit' edumaterial.id %}">Edit material</a></p>
         {% endif %}
     {% endif %}
 {% endblock %}
