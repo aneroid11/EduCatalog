@@ -7,9 +7,15 @@ from django.core.mail import send_mass_mail
 from django.views import View
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib.auth.models import Permission
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.contrib.contenttypes.models import ContentType
-from django.views.generic import TemplateView, ListView, DetailView
+from django.views.generic import (
+    TemplateView,
+    ListView,
+    DetailView,
+    UpdateView,
+    DeleteView
+)
 from django.views.generic.edit import CreateView, FormView
 from django.conf import settings
 from django.shortcuts import get_object_or_404
@@ -102,7 +108,20 @@ class EduMaterialDetailView(DetailView):
     model = EduMaterial
 
 
-class EduMaterialCreateView(CreateView):
+class EduMaterialEditView(UpdateView):
+    model = EduMaterial
+    fields = ["title", "summary", "access_type", "pdf_file", "category"]
+
+
+class EduMaterialDeleteView(DeleteView):
+    model = EduMaterial
+    success_url = reverse_lazy('category-list')
+
+
+class EduMaterialCreateView(PermissionRequiredMixin, CreateView):
+    permission_required = "catalog.add_edumaterial"
+    permission_denied_message = "You cannot add materials!"
+    login_url = reverse_lazy("login")
     model = EduMaterial
     fields = ['title', 'summary', 'access_type', 'pdf_file', 'category', 'author']
 
