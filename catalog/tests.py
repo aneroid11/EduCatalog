@@ -197,6 +197,7 @@ class EduMaterialCreateViewTest(TestCase):
         # and a category for the test material (actually two categories, parent and child)
         # a user who is subscribed to the category
         test_user = User.objects.create_user(username="testuser", email="testuser@example.com", password="passwodr")
+        test_user.save()
         test_author = models.Author.objects.create(user=test_user,
                                                    first_name="Test",
                                                    last_name="Author",
@@ -207,4 +208,20 @@ class EduMaterialCreateViewTest(TestCase):
         test_user_not_author2 = User.objects.create_user(username="user2",
                                                          email="user2@example.com",
                                                          password="passwodr")
+        test_parent_category = models.Category.objects.create(name="parent",
+                                                              info="some parent category",
+                                                              parent_category=None)
+        test_parent_category.users_subscribed.add(test_user_not_author)
+        test_parent_category.save()
 
+        test_child_category = models.Category.objects.create(name="child",
+                                                             info="some child category",
+                                                             parent_category=test_parent_category)
+        test_child_category.users_subscribed.add(test_user_not_author2)
+        test_child_category.save()
+
+        # create some materials
+
+    def test_view_url_redirects_to_login_when_not_logged_in(self):
+        response = self.client.get(reverse("edumaterial-create"))
+        self.assertRedirects(response, "/catalog/accounts/login/?next=/catalog/material/create")

@@ -2,6 +2,12 @@
 omit =
     */migrations/*
     */__init__.py
+    manage.py
+    edu_catalog/*
+    catalog/admin.py
+    catalog/apps.py
+    catalog/tests.py
+    catalog/urls.py
 
 [report]
 omit =
@@ -9,5 +15,9 @@ omit =
     */__init__.py
     manage.py
     edu_catalog/*
+    catalog/admin.py
+    catalog/apps.py
+    catalog/tests.py
+    catalog/urls.py
 
 show_missing = true
