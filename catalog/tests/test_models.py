@@ -1,7 +1,8 @@
 from django.test import TestCase
+from django.contrib.auth.models import User
+from django.core.files import File
 
 from catalog.models import Author, Category, EduMaterial
-from django.contrib.auth.models import User
 
 
 class AuthorModelTest(TestCase):
@@ -45,6 +46,7 @@ class CategoryModelTest(TestCase):
         parent_category.users_subscribed.add(User.objects.get(username__exact="somename"))
         parent_category.save()
 
+        # child category
         Category.objects.create(name="child",
                                 info="some child category",
                                 parent_category=parent_category)
@@ -87,3 +89,51 @@ class CategoryModelTest(TestCase):
         users_child_category = child_category.users_subscribed
         self.assertEqual(users_child_category.count(), 1)
         self.assertEqual(users_child_category.get_queryset()[0], User.objects.get(username__exact="somename2"))
+
+
+class EduMaterialModelTest(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        # author
+        User.objects.create_user("someauthor", email="someauthor@example.com", password="12345687")
+        Author.objects.create(user=User.objects.get(username__exact="someauthor"),
+                              first_name="Someauthor",
+                              last_name="Oncetoldme",
+                              info="Someauthor info")
+
+        # parent category
+        User.objects.create(username="somename", email="someemail@example.com", password="12345687")
+        User.objects.create(username="somename2", email="someemail2@example.com", password="12345687")
+        Category.objects.create(name="parent",
+                                info="some parent category",
+                                parent_category=None)
+        parent_category = Category.objects.get(name__exact="parent")
+        parent_category.users_subscribed.add(User.objects.get(username__exact="somename"))
+        parent_category.save()
+
+        # child category
+        Category.objects.create(name="child",
+                                info="some child category",
+                                parent_category=parent_category)
+        child_category = Category.objects.get(name="child")
+        child_category.users_subscribed.add(User.objects.get(username__exact="somename2"))
+        child_category.save()
+
+        EduMaterial.objects.create(title="Material 1",
+                                   summary="Some material 1 in parent category",
+                                   author=Author.objects.get(first_name="Someauthor"),
+                                   access_type='p',
+                                   pdf_file=File(open("pdfmaterials/some_pdf.pdf", 'rb')))
+        edu_material = EduMaterial.objects.get(id=1)
+        edu_material.category.add(child_category)
+
+    def test_labels(self):
+        material = EduMaterial.objects.get(id=1)
+        self.assertEqual(material._meta.get_field('title').max_length, 200)
+        self.assertEqual(material._meta.get_field('summary').max_length, 1000)
+        self.assertEqual(material._meta.get_field('access_type').max_length, 1)
+
+    def test_author(self):
+        material = EduMaterial.objects.get(id=1)
+        author = Author.objects.get(first_name='Someauthor')
+        self.assertEqual(material.author, author)
