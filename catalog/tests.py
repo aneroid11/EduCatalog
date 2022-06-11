@@ -185,3 +185,26 @@ class IndexViewTest(TestCase):
         response = self.client.get(reverse('index'))
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'catalog/index.html')
+
+
+class EduMaterialCreateViewTest(TestCase):
+    def setUp(self):
+        # we need:
+
+        # an author
+        # who is also a user
+        # material data
+        # and a category for the test material (actually two categories, parent and child)
+        # a user who is subscribed to the category
+        test_user = User.objects.create_user(username="testuser", email="testuser@example.com", password="passwodr")
+        test_author = models.Author.objects.create(user=test_user,
+                                                   first_name="Test",
+                                                   last_name="Author",
+                                                   info="Some test author")
+        test_user_not_author = User.objects.create_user(username="user1",
+                                                        email="user1@example.com",
+                                                        password="passwodr")
+        test_user_not_author2 = User.objects.create_user(username="user2",
+                                                         email="user2@example.com",
+                                                         password="passwodr")
+
