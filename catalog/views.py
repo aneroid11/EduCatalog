@@ -1,4 +1,5 @@
 import threading
+import logging
 
 from django.http import HttpResponse, HttpRequest, FileResponse, Http404
 from django.core.exceptions import PermissionDenied
@@ -24,33 +25,24 @@ from django.urls import reverse_lazy
 from .models import Category, EduMaterial, Author
 from .forms import UserRegisterForm, GetUserCardDataForm
 
+logging.basicConfig(filename="views.log", level=logging.INFO)
+logger = logging.getLogger(__name__)
+
 
 def send_notify_about_category(category: Category):
+    logger.info("Send notifications about the update of " + category.name + " category")
+
     users = [user.email for user in category.users_subscribed.all()]
 
     if len(users) == 0:
+        logger.warning("No users to send notifications about the update of " + category.name + " category")
         return
 
     subject = "Category '" + category.name + "' was updated"
     msg = "The category was updated! Don't forget to check it out!"
     message = (subject, msg, 'educatalogteam@example.com', users)
     send_mass_mail((message,), fail_silently=False)
-
-
-def notify_users_about_category_update(category_name: str):
-    print(category_name)
-    print("updated")
-
-    category = Category.objects.get(name__exact=category_name)
-
-    threads = [threading.Thread(target=send_notify_about_category, args=(category,))]
-
-    while category.parent_category is not None:
-        category = category.parent_category
-        threads.append(threading.Thread(target=send_notify_about_category, args=(category,)))
-
-    for t in threads:
-        t.start()
+    logger.warning("Notifications sent successfully")
 
 
 class SignUpView(SuccessMessageMixin, CreateView):
@@ -62,13 +54,17 @@ class SignUpView(SuccessMessageMixin, CreateView):
 
 class MaterialFileView(View):
     def get(self, request: HttpRequest, pk: int) -> FileResponse:
+        logger.info("request for file: " + str(pk))
+        logger.info("getting the material")
         material = get_object_or_404(EduMaterial, pk=pk)
 
         if material.access_type == "s":
             if not request.user.is_authenticated:
+                logger.error("user is not authenticated and the material access type is signed up only!")
                 raise PermissionDenied
         elif material.access_type == "p":
             if not request.user.has_perm("catalog.can_view_premium"):
+                logger.error("user cannot view premium materials but requests a premium material download!")
                 raise PermissionDenied
 
         file_path = settings.BASE_DIR / material.pdf_file.path
@@ -76,6 +72,7 @@ class MaterialFileView(View):
         try:
             return FileResponse(open(file_path, "rb"), content_type="application/pdf")
         except FileNotFoundError:
+            logger.error("there is no such file on the server:", file_path)
             raise Http404()
 
 
@@ -100,6 +97,7 @@ class SubscribeCategoryView(LoginRequiredMixin, TemplateView):
         category = get_object_or_404(Category, pk=pk)
         category.users_subscribed.add(request.user)
         category.save()
+        logger.info("subscribe", request.user, "to category:", category.name)
 
         return super(SubscribeCategoryView, self).get(request, *args, **kwargs)
 
@@ -147,6 +145,7 @@ class EduMaterialCreateView(PermissionRequiredMixin, CreateView):
 
                 category = category.parent_category
 
+        logger.info("starting threads that send messages about the category update")
         for category in categories_to_update:
             thread = threading.Thread(target=send_notify_about_category, args=(category,))
             thread.start()
@@ -171,6 +170,7 @@ class SearchView(ListView):
 
     def get_queryset(self):
         usr_query = self.request.GET['usr_query']
+        logger.info("user searched: " + usr_query)
         filtered_objects = EduMaterial.objects.filter(title__icontains=usr_query) | \
                            EduMaterial.objects.filter(summary__icontains=usr_query) | \
                            EduMaterial.objects.filter(author__first_name__icontains=usr_query) | \
@@ -189,6 +189,8 @@ class GetPremiumView(FormView):
         content_type = ContentType.objects.get_for_model(EduMaterial)
         permission = Permission.objects.get(codename="can_view_premium", content_type=content_type)
         self.request.user.user_permissions.add(permission)
+
+        logger.info("added premium to user:", self.request.user)
 
         return super().form_valid(form)
 
