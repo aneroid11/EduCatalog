@@ -1,13 +1,14 @@
 import logging
 
 from django.test import TestCase
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Permission, Group
+from django.contrib.contenttypes.models import ContentType
 from django.core.files import File
 from django.shortcuts import reverse
 
 from . import models
 from . import forms
-from . import views
+# from . import views
 
 
 class AuthorModelTest(TestCase):
@@ -113,7 +114,6 @@ class EduMaterialModelTest(TestCase):
                                        info="some parent category",
                                        parent_category=None)
         parent_category = models.Category.objects.get(name__exact="parent")
-        logging.critical(str(parent_category.id))
         parent_category.users_subscribed.add(User.objects.get(username__exact="somename"))
         parent_category.save()
 
@@ -198,10 +198,27 @@ class EduMaterialCreateViewTest(TestCase):
         # a user who is subscribed to the category
         test_user = User.objects.create_user(username="testuser", email="testuser@example.com", password="passwodr")
         test_user.save()
-        test_author = models.Author.objects.create(user=test_user,
-                                                   first_name="Test",
-                                                   last_name="Author",
-                                                   info="Some test author")
+        models.Author.objects.create(user=test_user,
+                                     first_name="Test",
+                                     last_name="Author",
+                                     info="Some test author")
+
+        # grant author permissions (add to the Authors group)
+        authors_group = Group.objects.create(name="authors")
+
+        permissions = (
+            "can_view_premium",
+            "add_edumaterial",
+            "view_edumaterial",
+            "change_edumaterial",
+            "delete_edumaterial",
+        )
+        for perm in permissions:
+            print(perm)
+            authors_group.permissions.add(Permission.objects.get(codename=perm))
+
+        authors_group.user_set.add(test_user)
+
         test_user_not_author = User.objects.create_user(username="user1",
                                                         email="user1@example.com",
                                                         password="passwodr")
@@ -220,8 +237,14 @@ class EduMaterialCreateViewTest(TestCase):
         test_child_category.users_subscribed.add(test_user_not_author2)
         test_child_category.save()
 
-        # create some materials
-
     def test_view_url_redirects_to_login_when_not_logged_in(self):
         response = self.client.get(reverse("edumaterial-create"))
         self.assertRedirects(response, "/catalog/accounts/login/?next=/catalog/material/create")
+
+    def test_authenticate_as_author_and_add_material(self):
+        user_author = self.client.login(username="testuser",
+                                        password="passwodr")
+        self.assertIsNotNone(user_author)
+        # add material as an author
+        response = self.client.get(reverse("edumaterial-create"))
+        self.assertEqual(response.status_code, 200)
