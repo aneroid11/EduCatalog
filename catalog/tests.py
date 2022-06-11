@@ -3,9 +3,11 @@ import logging
 from django.test import TestCase
 from django.contrib.auth.models import User
 from django.core.files import File
+from django.shortcuts import reverse
 
 from . import models
 from . import forms
+from . import views
 
 
 class AuthorModelTest(TestCase):
@@ -172,3 +174,14 @@ class GetUserCardDataFormTest(TestCase):
         self.assertEqual(form.fields["card_number"].label, "Card number field")
         self.assertEqual(form.fields["card_expiry"].label, "Expiration Date")
         self.assertEqual(form.fields["card_code"].label, "CVV/CVC")
+
+
+class IndexViewTest(TestCase):
+    def test_view_url_exists_at_desired_location(self):
+        response = self.client.get('/catalog/')
+        self.assertEqual(response.status_code, 200)
+
+    def test_view_uses_correct_template_and_is_accessible_by_name(self):
+        response = self.client.get(reverse('index'))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'catalog/index.html')
