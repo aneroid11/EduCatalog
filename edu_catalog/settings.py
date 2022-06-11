@@ -141,6 +141,5 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
 
 NOSE_ARGS = [
-    '--with-coverage',
     '--cover-package=catalog',
 ]

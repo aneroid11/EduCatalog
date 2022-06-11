@@ -7,3 +7,5 @@ omit =
 omit =
     */migrations/*
     */__init__.py
+    manage.py
+    edu_catalog/*
