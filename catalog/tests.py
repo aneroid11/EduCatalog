@@ -164,3 +164,11 @@ class UserRegisterFormTest(TestCase):
         self.assertEqual(form.fields['last_name'].label, 'Last name')
         self.assertEqual(form.fields['password1'].label, 'Password')
         self.assertEqual(form.fields['password2'].label, 'Password confirmation')
+
+
+class GetUserCardDataFormTest(TestCase):
+    def test_fields(self):
+        form = forms.GetUserCardDataForm()
+        self.assertEqual(form.fields["card_number"].label, "Card number field")
+        self.assertEqual(form.fields["card_expiry"].label, "Expiration Date")
+        self.assertEqual(form.fields["card_code"].label, "CVV/CVC")
