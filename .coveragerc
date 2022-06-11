@@ -9,3 +9,5 @@ omit =
     */__init__.py
     manage.py
     edu_catalog/*
+
+show_missing = true

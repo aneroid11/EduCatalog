@@ -140,3 +140,15 @@ class EduMaterialModelTest(TestCase):
         material = models.EduMaterial.objects.get(id=1)
         author = models.Author.objects.get(first_name='Someauthor')
         self.assertEqual(material.author, author)
+
+    def test_str(self):
+        material = models.EduMaterial.objects.get(id=1)
+        self.assertEqual(str(material), material.title)
+
+    def test_get_absolute_url(self):
+        material = models.EduMaterial.objects.get(id=1)
+        self.assertEqual(material.get_absolute_url(), "/catalog/material/1")
+
+    def test_get_absolute_file_url(self):
+        material = models.EduMaterial.objects.get(id=1)
+        self.assertEqual(material.get_absolute_file_url(), "/catalog/material/1/file")
