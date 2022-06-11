@@ -1,12 +1,21 @@
 from django.test import TestCase
 
 from catalog.models import Author, Category, EduMaterial
+from django.contrib.auth.models import User
 
 
 class AuthorModelTest(TestCase):
     @classmethod
     def setUpTestData(cls):
-        Author.objects.create(user=None, first_name="Somebody", last_name="Oncetoldme", info="Somebody info")
+        User.objects.create_user("somename", email="someemail@example.com", password="12345687")
+        Author.objects.create(user=User.objects.get(id=1),
+                              first_name="Somebody",
+                              last_name="Oncetoldme",
+                              info="Somebody info")
+
+    def test_author_user(self):
+        author = Author.objects.get(id=1)
+        self.assertEqual(author.user, User.objects.get(id=1))
 
     def test_labels_max_length(self):
         author = Author.objects.get(id=1)
@@ -21,3 +30,9 @@ class AuthorModelTest(TestCase):
     def test_str(self):
         author = Author.objects.get(id=1)
         self.assertEqual(str(author), f"{author.first_name} {author.last_name}")
+
+
+class CategoryModelTest(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        
