@@ -126,35 +126,36 @@ class EduMaterialModelTest(TestCase):
         child_category.save()
 
         models.EduMaterial.objects.create(title="Material 1",
-                                          summary="Some material 1 in parent category",
+                                          summary="Some material 1 in child category",
                                           author=models.Author.objects.get(first_name="Someauthor"),
                                           access_type='p',
                                           pdf_file=File(open("pdfmaterials/some_pdf.pdf", 'rb')))
-        edu_material = models.EduMaterial.objects.get(id=1)
+        edu_material = models.EduMaterial.objects.get(title="Material 1")
         edu_material.category.add(child_category)
 
     def test_labels(self):
-        material = models.EduMaterial.objects.get(id=1)
+        material = models.EduMaterial.objects.get(title="Material 1")
         self.assertEqual(material._meta.get_field('title').max_length, 200)
         self.assertEqual(material._meta.get_field('summary').max_length, 1000)
         self.assertEqual(material._meta.get_field('access_type').max_length, 1)
 
     def test_author(self):
-        material = models.EduMaterial.objects.get(id=1)
+        material = models.EduMaterial.objects.get(title="Material 1")
         author = models.Author.objects.get(first_name='Someauthor')
         self.assertEqual(material.author, author)
 
     def test_str(self):
-        material = models.EduMaterial.objects.get(id=1)
+        material = models.EduMaterial.objects.get(title="Material 1")
         self.assertEqual(str(material), material.title)
 
     def test_get_absolute_url(self):
-        material = models.EduMaterial.objects.get(id=1)
-        self.assertEqual(material.get_absolute_url(), "/catalog/material/1")
+        material = models.EduMaterial.objects.get(title="Material 1")
+        path = "/catalog/material/" + str(material.id)
+        self.assertEqual(material.get_absolute_url(), path)
 
     def test_get_absolute_file_url(self):
-        material = models.EduMaterial.objects.get(id=1)
-        self.assertEqual(material.get_absolute_file_url(), "/catalog/material/1/file")
+        material = models.EduMaterial.objects.get(title="Material 1")
+        self.assertEqual(material.get_absolute_file_url(), material.get_absolute_url() + "/file")
 
 
 class UserRegisterFormTest(TestCase):
@@ -189,13 +190,6 @@ class IndexViewTest(TestCase):
 
 class EduMaterialCreateViewTest(TestCase):
     def setUp(self):
-        # we need:
-
-        # an author
-        # who is also a user
-        # material data
-        # and a category for the test material (actually two categories, parent and child)
-        # a user who is subscribed to the category
         test_user = User.objects.create_user(username="testuser", email="testuser@example.com", password="passwodr")
         test_user.save()
         models.Author.objects.create(user=test_user,
@@ -247,4 +241,15 @@ class EduMaterialCreateViewTest(TestCase):
         self.assertIsNotNone(user_author)
         # add material as an author
         response = self.client.get(reverse("edumaterial-create"))
+        self.assertEqual(response.status_code, 200)
+
+        response = self.client.post(reverse("edumaterial-create"),
+                                    {
+                                        "title": ["sometitle"],
+                                        "summary": ["somesummary"],
+                                        "access_type": ["p"],
+                                        "pdf_file": [open("pdfmaterials/some_pdf.pdf", 'rb')],
+                                        "category": [str(models.Category.objects.get(name="child").id)],
+                                        "author": [str(models.Author.objects.get(first_name="Test").id)]
+                                    })
         self.assertEqual(response.status_code, 200)

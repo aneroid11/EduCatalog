@@ -138,6 +138,10 @@ class EduMaterialCreateView(PermissionRequiredMixin, CreateView):
         responce = super().form_valid(form)
         categories_to_update = []
 
+        request = self.request
+        print(request.POST)
+        # print(form.cleaned_data)
+
         for category in form.cleaned_data['category']:
             while category is not None:
                 if category not in categories_to_update:
