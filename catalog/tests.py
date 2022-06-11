@@ -5,6 +5,7 @@ from django.contrib.auth.models import User
 from django.core.files import File
 
 from . import models
+from . import forms
 
 
 class AuthorModelTest(TestCase):
@@ -152,3 +153,14 @@ class EduMaterialModelTest(TestCase):
     def test_get_absolute_file_url(self):
         material = models.EduMaterial.objects.get(id=1)
         self.assertEqual(material.get_absolute_file_url(), "/catalog/material/1/file")
+
+
+class UserRegisterFormTest(TestCase):
+    def test_fields(self):
+        form = forms.UserRegisterForm()
+        self.assertEqual(form.fields['username'].label, 'Username')
+        self.assertEqual(form.fields['email'].label, 'Email address')
+        self.assertEqual(form.fields['first_name'].label, 'First name')
+        self.assertEqual(form.fields['last_name'].label, 'Last name')
+        self.assertEqual(form.fields['password1'].label, 'Password')
+        self.assertEqual(form.fields['password2'].label, 'Password confirmation')
