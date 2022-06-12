@@ -1,6 +1,3 @@
-import sys
-import threading
-
 from django.test import TestCase
 from django.contrib.auth.models import User, Permission, Group
 from django.core.files import File
@@ -8,7 +5,6 @@ from django.shortcuts import reverse
 
 from . import models
 from . import forms
-# from . import views
 
 
 class AuthorModelTest(TestCase):

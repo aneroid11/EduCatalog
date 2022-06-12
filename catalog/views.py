@@ -1,3 +1,4 @@
+import os
 import threading
 import logging
 
@@ -119,6 +120,21 @@ class EduMaterialEditView(UpdateView):
 class EduMaterialDeleteView(DeleteView):
     model = EduMaterial
     success_url = reverse_lazy('category-list')
+
+    def form_valid(self, form):
+        # delete all files that are not referenced by any material
+        materials = EduMaterial.objects.all()
+        files_not_to_delete = [material.pdf_file.path for material in materials]
+        root_dir = settings.BASE_DIR / "pdfmaterials/"
+
+        for subdir, dirs, files in os.walk(root_dir):
+            for file in files:
+                full_path = os.path.join(subdir, file)
+
+                if full_path not in files_not_to_delete:
+                    os.remove(full_path)
+
+        return super().form_valid(form)
 
 
 class EduMaterialCreateView(PermissionRequiredMixin, CreateView):
