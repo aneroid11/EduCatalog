@@ -251,7 +251,7 @@ class EduMaterialCreateViewTest(TestCase):
                                             "summary": "somesummary",
                                             "access_type": "p",
                                             "pdf_file": pdf,
-                                            "category": models.Category.objects.get(name="child").id,
+                                            "category": [models.Category.objects.get(name="child").id, ],
                                             "author": models.Author.objects.get(first_name="Test").id,
                                         })
 
@@ -262,5 +262,6 @@ class EduMaterialCreateViewTest(TestCase):
                                      args=[str(created_material.id)]
                                      )
                              )
-        # print(created_material.author)
+        print(created_material.category.get_queryset())
+        sys.exit(1)
         self.assertEqual(created_material.author, models.Author.objects.get(first_name="Test"))
