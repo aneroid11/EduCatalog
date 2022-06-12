@@ -232,10 +232,9 @@ class EduMaterialCreateViewTest(TestCase):
         test_child_category.users_subscribed.add(test_user_not_author2)
         test_child_category.save()
 
-    @classmethod
-    def tearDownClass(cls):
+    def tearDown(self) -> None:
         utils.delete_used_files()
-        super().tearDownClass()
+        super().tearDown()
 
     def test_view_url_redirects_to_login_when_not_logged_in(self):
         response = self.client.get(reverse("edumaterial-create"))
