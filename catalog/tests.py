@@ -245,11 +245,21 @@ class EduMaterialCreateViewTest(TestCase):
 
         response = self.client.post(reverse("edumaterial-create"),
                                     {
-                                        "title": ["sometitle"],
-                                        "summary": ["somesummary"],
-                                        "access_type": ["p"],
-                                        "pdf_file": [open("pdfmaterials/some_pdf.pdf", 'rb')],
-                                        "category": [str(models.Category.objects.get(name="child").id)],
-                                        "author": [str(models.Author.objects.get(first_name="Test").id)]
+                                        "title": "sometitle",
+                                        "summary": "somesummary",
+                                        "access_type": "p",
+                                        "pdf_file": open("pdfmaterials/some_pdf.pdf", "rb"),
+                                        "category": models.Category.objects.get(name="child").id,
+                                        "author": models.Author.objects.get(first_name="Test").id
                                     })
-        self.assertEqual(response.status_code, 200)
+        self.assertRedirects(
+            response,
+            reverse("edumaterial-detail",
+                    args=[str(models.EduMaterial.objects.get(title="sometitle").id)])
+        )
+        print(response.status_code)
+        material = models.EduMaterial.objects.get(title="sometitle")
+        self.assertEqual(material.summary, "somesummary")
+        self.assertEqual(material.access_type, "p")
+        self.assertEqual(material.category, models.Category.objects.get(name="child"))
+        self.assertEqual(material.author, models.Author.objects.get(name="Test"))
