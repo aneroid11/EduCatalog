@@ -123,7 +123,7 @@ class EduMaterialDeleteView(DeleteView):
 
     def form_valid(self, form):
         # delete all files that are not referenced by any material
-        materials = EduMaterial.objects.all()
+        """materials = EduMaterial.objects.all()
         files_not_to_delete = [material.pdf_file.path for material in materials]
         root_dir = settings.BASE_DIR / "pdfmaterials/"
 
@@ -132,7 +132,7 @@ class EduMaterialDeleteView(DeleteView):
                 full_path = os.path.join(subdir, file)
 
                 if full_path not in files_not_to_delete:
-                    os.remove(full_path)
+                    os.remove(full_path)"""
 
         return super().form_valid(form)
 

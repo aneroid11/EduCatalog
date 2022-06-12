@@ -1,7 +1,11 @@
+import os
+import shutil
+
 from django.test import TestCase
 from django.contrib.auth.models import User, Permission, Group
 from django.core.files import File
 from django.shortcuts import reverse
+from django.conf import settings
 
 from . import models
 from . import forms
@@ -123,7 +127,9 @@ class EduMaterialModelTest(TestCase):
                                                          summary="Some material 1 in child category",
                                                          author=models.Author.objects.get(first_name="Someauthor"),
                                                          access_type='p',
-                                                         pdf_file=File(open("pdfmaterials/some_pdf.pdf", 'rb')))
+                                                         pdf_file=File(open(
+                                                             "pdfmaterials/курсач.pdf", 'rb'
+                                                         )))
         edu_material.category.add(child_category)
 
     def test_labels(self):
@@ -237,7 +243,7 @@ class EduMaterialCreateViewTest(TestCase):
         self.assertEqual(response.status_code, 200)
 
         # make a POST request to add material
-        with open("pdfmaterials/some_pdf.pdf", "rb") as pdf:
+        with open("pdfmaterials/курсач.pdf", "rb") as pdf:
             response = self.client.post(reverse("edumaterial-create"),
                                         {
                                             "title": "sometitle",
@@ -299,20 +305,20 @@ class MaterialFileViewTest(TestCase):
                                                          summary="Some material 1 in child category",
                                                          author=models.Author.objects.get(first_name="Someauthor"),
                                                          access_type='p',
-                                                         pdf_file=File(open("pdfmaterials/some_pdf.pdf", 'rb')))
+                                                         pdf_file=File(open("pdfmaterials/курсач.pdf", 'rb')))
         edu_material.category.add(child_category)
         edu_material_2 = models.EduMaterial.objects.create(title="Material 2",
                                                            summary="Some material 2 in child category",
                                                            author=models.Author.objects.get(first_name="Someauthor"),
                                                            access_type="s",
-                                                           pdf_file=File(open("pdfmaterials/some_pdf.pdf", "rb")))
+                                                           pdf_file=File(open("pdfmaterials/курсач.pdf", "rb")))
         edu_material_2.category.add(child_category)
 
         edu_material_3 = models.EduMaterial.objects.create(title="Material 3",
                                                            summary="Some material 3 in child category",
                                                            author=models.Author.objects.get(first_name="Someauthor"),
                                                            access_type="e",
-                                                           pdf_file=File(open("pdfmaterials/some_pdf.pdf", "rb")))
+                                                           pdf_file=File(open("pdfmaterials/курсач.pdf", "rb")))
         edu_material_3.category.add(child_category)
 
     def test_access_to_materials_files(self):
