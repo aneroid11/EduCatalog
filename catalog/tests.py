@@ -1,5 +1,9 @@
+import os
+import shutil
+
 from django.test import TestCase
 from django.contrib.auth.models import User, Permission, Group
+from django.contrib.auth import settings
 from django.core.files import File
 from django.shortcuts import reverse
 
@@ -345,3 +349,24 @@ class MaterialFileViewTest(TestCase):
         self.assertEqual(self.client.get(material1.get_absolute_file_url()).status_code, 403)
         self.assertEqual(self.client.get(material2.get_absolute_file_url()).status_code, 403)
         self.assertEqual(self.client.get(material3.get_absolute_file_url()).status_code, 200)
+
+
+class AbandonedFilesTest(TestCase):
+    def setUp(self):
+        super().setUp()
+
+        os.rename("pdfmaterials", "pdfmaterials_copy")
+        os.mkdir("pdfmaterials", mode=0o777)
+        shutil.copy("pdfmaterials_copy/курсач.pdf", "pdfmaterials/")
+
+    def tearDown(self) -> None:
+        super().tearDown()
+        os.rename("pdfmaterials_copy", "pdfmaterials")
+
+    def test_abandoned_files(self):
+        utils.delete_abandoned_files()
+
+        root_dir = settings.BASE_DIR / "pdfmaterials/"
+
+        for subdir, dirs, files in os.walk(root_dir):
+            self.assertEqual(len(files), 0)
