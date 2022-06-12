@@ -1,12 +1,9 @@
-import os
-import shutil
-
 from django.test import TestCase
 from django.contrib.auth.models import User, Permission, Group
 from django.core.files import File
 from django.shortcuts import reverse
-from django.conf import settings
 
+from . import utils
 from . import models
 from . import forms
 
@@ -132,6 +129,11 @@ class EduMaterialModelTest(TestCase):
                                                          )))
         edu_material.category.add(child_category)
 
+    @classmethod
+    def tearDownClass(cls):
+        utils.delete_used_files()
+        super().tearDownClass()
+
     def test_labels(self):
         material = models.EduMaterial.objects.get(title="Material 1")
         self.assertEqual(material._meta.get_field('title').max_length, 200)
@@ -230,6 +232,11 @@ class EduMaterialCreateViewTest(TestCase):
         test_child_category.users_subscribed.add(test_user_not_author2)
         test_child_category.save()
 
+    @classmethod
+    def tearDownClass(cls):
+        utils.delete_used_files()
+        super().tearDownClass()
+
     def test_view_url_redirects_to_login_when_not_logged_in(self):
         response = self.client.get(reverse("edumaterial-create"))
         self.assertRedirects(response, "/catalog/accounts/login/?next=/catalog/material/create")
@@ -320,6 +327,12 @@ class MaterialFileViewTest(TestCase):
                                                            access_type="e",
                                                            pdf_file=File(open("pdfmaterials/курсач.pdf", "rb")))
         edu_material_3.category.add(child_category)
+
+    @classmethod
+    def tearDownClass(cls):
+        utils.delete_used_files()
+
+        super().tearDownClass()
 
     def test_access_to_materials_files(self):
         material1 = models.EduMaterial.objects.get(title="Material 1")
