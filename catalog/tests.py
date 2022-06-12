@@ -1,8 +1,5 @@
-import logging
-
 from django.test import TestCase
 from django.contrib.auth.models import User, Permission, Group
-from django.contrib.contenttypes.models import ContentType
 from django.core.files import File
 from django.shortcuts import reverse
 
@@ -19,6 +16,9 @@ class AuthorModelTest(TestCase):
                                      first_name="Somebody",
                                      last_name="Oncetoldme",
                                      info="Somebody info")
+        print("AUTHOR MODEL TEST")
+        print(models.Author.objects.all())
+        print(models.Author.objects.get(first_name="Somebody").id)
 
     def test_author_user(self):
         author = models.Author.objects.get(id=1)
@@ -189,7 +189,8 @@ class IndexViewTest(TestCase):
 
 
 class EduMaterialCreateViewTest(TestCase):
-    def setUp(self):
+    @classmethod
+    def setUpTestData(cls):
         test_user = User.objects.create_user(username="testuser", email="testuser@example.com", password="passwodr")
         test_user.save()
         models.Author.objects.create(user=test_user,
@@ -197,7 +198,6 @@ class EduMaterialCreateViewTest(TestCase):
                                      last_name="Author",
                                      info="Some test author")
 
-        # grant author permissions (add to the Authors group)
         authors_group = Group.objects.create(name="authors")
 
         permissions = (
@@ -242,24 +242,3 @@ class EduMaterialCreateViewTest(TestCase):
         # add material as an author
         response = self.client.get(reverse("edumaterial-create"))
         self.assertEqual(response.status_code, 200)
-
-        response = self.client.post(reverse("edumaterial-create"),
-                                    {
-                                        "title": "sometitle",
-                                        "summary": "somesummary",
-                                        "access_type": "p",
-                                        "pdf_file": open("pdfmaterials/some_pdf.pdf", "rb"),
-                                        "category": models.Category.objects.get(name="child").id,
-                                        "author": models.Author.objects.get(first_name="Test").id
-                                    })
-        self.assertRedirects(
-            response,
-            reverse("edumaterial-detail",
-                    args=[str(models.EduMaterial.objects.get(title="sometitle").id)])
-        )
-        print(response.status_code)
-        material = models.EduMaterial.objects.get(title="sometitle")
-        self.assertEqual(material.summary, "somesummary")
-        self.assertEqual(material.access_type, "p")
-        self.assertEqual(material.category, models.Category.objects.get(name="child"))
-        self.assertEqual(material.author, models.Author.objects.get(name="Test"))
