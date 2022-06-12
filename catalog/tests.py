@@ -1,4 +1,5 @@
 import sys
+import threading
 
 from django.test import TestCase
 from django.contrib.auth.models import User, Permission, Group
@@ -239,10 +240,6 @@ class EduMaterialCreateViewTest(TestCase):
         response = self.client.get(reverse("edumaterial-create"))
         self.assertEqual(response.status_code, 200)
 
-        for category in models.Category.objects.all():
-            print(category)
-            print(category.id)
-
         # make a POST request to add material
         with open("pdfmaterials/some_pdf.pdf", "rb") as pdf:
             response = self.client.post(reverse("edumaterial-create"),
@@ -262,6 +259,6 @@ class EduMaterialCreateViewTest(TestCase):
                                      args=[str(created_material.id)]
                                      )
                              )
-        print(created_material.category.get_queryset())
-        sys.exit(1)
+
         self.assertEqual(created_material.author, models.Author.objects.get(first_name="Test"))
+        self.assertEqual(created_material.category.get_queryset()[0], models.Category.objects.get(name="child"))

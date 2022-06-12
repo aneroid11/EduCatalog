@@ -29,9 +29,14 @@ logging.basicConfig(filename="views.log", level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
-def send_notify_about_category(category: Category):
+def send_notify_about_category(category_id: int):
+    print("ALL CATEGORIES")
+    print(Category.objects.all())
+    category = Category.objects.get(id=category_id)
+
     logger.info("Send notifications about the update of " + category.name + " category")
 
+    # print(category.users_subscribed.all())
     users = [user.email for user in category.users_subscribed.all()]
 
     if len(users) == 0:
@@ -139,8 +144,8 @@ class EduMaterialCreateView(PermissionRequiredMixin, CreateView):
         categories_to_update = []
 
         request = self.request
-        print(request.POST)
-        # print(form.cleaned_data)
+        # print(request.POST)
+        # print(form.cleaned_data['category'][0].users_subscribed.all())
 
         for category in form.cleaned_data['category']:
             while category is not None:
@@ -151,8 +156,13 @@ class EduMaterialCreateView(PermissionRequiredMixin, CreateView):
 
         logger.info("starting threads that send messages about the category update")
         for category in categories_to_update:
-            thread = threading.Thread(target=send_notify_about_category, args=(category,))
-            thread.start()
+            print(category)
+            print(category.users_subscribed.all())
+
+            # without threads it (somehow) is working properly...
+            send_notify_about_category(category_id=category.id)
+            # thread = threading.Thread(target=send_notify_about_category, args=(category.id,))
+            # thread.start()
 
         return responce
 
