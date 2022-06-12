@@ -16,9 +16,6 @@ class AuthorModelTest(TestCase):
                                      first_name="Somebody",
                                      last_name="Oncetoldme",
                                      info="Somebody info")
-        print("AUTHOR MODEL TEST")
-        print(models.Author.objects.all())
-        print(models.Author.objects.get(first_name="Somebody").id)
 
     def test_author_user(self):
         author = models.Author.objects.get(id=1)
@@ -45,48 +42,46 @@ class CategoryModelTest(TestCase):
         # parent category
         User.objects.create(username="somename", email="someemail@example.com", password="12345687")
         User.objects.create(username="somename2", email="someemail2@example.com", password="12345687")
-        models.Category.objects.create(name="parent",
-                                       info="some parent category",
-                                       parent_category=None)
-        parent_category = models.Category.objects.get(id=1)
+        parent_category = models.Category.objects.create(name="parent",
+                                                         info="some parent category",
+                                                         parent_category=None)
         parent_category.users_subscribed.add(User.objects.get(username__exact="somename"))
         parent_category.save()
 
         # child category
-        models.Category.objects.create(name="child",
-                                       info="some child category",
-                                       parent_category=parent_category)
-        child_category = models.Category.objects.get(id=2)
+        child_category = models.Category.objects.create(name="child",
+                                                        info="some child category",
+                                                        parent_category=parent_category)
         child_category.users_subscribed.add(User.objects.get(username__exact="somename2"))
         child_category.save()
 
     def test_str(self):
-        category = models.Category.objects.get(id=2)
+        category = models.Category.objects.get(name="child")
         self.assertEqual(str(category), category.name)
 
     def test_get_absolute_url(self):
-        category = models.Category.objects.get(id=1)
+        category = models.Category.objects.get(name="parent")
         self.assertEqual(category.get_absolute_url(),
-                         "/catalog/category/1")
+                         "/catalog/category/" + str(category.id))
 
     def test_get_absolute_url_for_subscribe(self):
-        category = models.Category.objects.get(id=1)
+        category = models.Category.objects.get(name="parent")
         self.assertEqual(category.get_absolute_url_for_subscribe(),
-                         "/catalog/category/1/subscribe")
+                         "/catalog/category/" + str(category.id) + "/subscribe")
 
     def test_labels(self):
-        category = models.Category.objects.get(id=1)
+        category = models.Category.objects.get(name="parent")
         self.assertEqual(category._meta.get_field('name').max_length, 100)
         self.assertEqual(category._meta.get_field('info').max_length, 1000)
 
     def test_parent_category(self):
-        category = models.Category.objects.get(id=2)
-        parent_category = models.Category.objects.get(id=1)
+        category = models.Category.objects.get(name="child")
+        parent_category = models.Category.objects.get(name="parent")
         self.assertEqual(parent_category, category.parent_category)
 
     def test_users_subscribed(self):
-        parent_category = models.Category.objects.get(id=1)
-        child_category = models.Category.objects.get(id=2)
+        parent_category = models.Category.objects.get(name="parent")
+        child_category = models.Category.objects.get(name="child")
 
         users_parent_category = parent_category.users_subscribed
         self.assertEqual(users_parent_category.count(), 1)
@@ -125,12 +120,11 @@ class EduMaterialModelTest(TestCase):
         child_category.users_subscribed.add(User.objects.get(username__exact="somename2"))
         child_category.save()
 
-        models.EduMaterial.objects.create(title="Material 1",
-                                          summary="Some material 1 in child category",
-                                          author=models.Author.objects.get(first_name="Someauthor"),
-                                          access_type='p',
-                                          pdf_file=File(open("pdfmaterials/some_pdf.pdf", 'rb')))
-        edu_material = models.EduMaterial.objects.get(title="Material 1")
+        edu_material = models.EduMaterial.objects.create(title="Material 1",
+                                                         summary="Some material 1 in child category",
+                                                         author=models.Author.objects.get(first_name="Someauthor"),
+                                                         access_type='p',
+                                                         pdf_file=File(open("pdfmaterials/some_pdf.pdf", 'rb')))
         edu_material.category.add(child_category)
 
     def test_labels(self):
@@ -243,9 +237,24 @@ class EduMaterialCreateViewTest(TestCase):
         response = self.client.get(reverse("edumaterial-create"))
         self.assertEqual(response.status_code, 200)
 
+        for category in models.Category.objects.all():
+            print(category.id)
+
         # make a POST request to add material
-        with open("pdfmaterials/some_pdf.pdf") as pdf:
+        with open("pdfmaterials/some_pdf.pdf", "rb") as pdf:
             response = self.client.post(reverse("edumaterial-create"),
                                         {
+                                            "title": "sometitle",
+                                            "summary": "somesummary",
+                                            "access_type": "p",
+                                            "pdf_file": pdf,
+                                            "category": models.Category.objects.get(name="child").id,
+                                            "author": models.Author.objects.get(first_name="Test").id,
                                         })
-            self.assertEqual(response.status_code, 302)
+
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response,
+                             reverse("edumaterial-detail",
+                                     args=[str(models.EduMaterial.objects.get(title="sometitle").id)]
+                                     )
+                             )
