@@ -242,3 +242,10 @@ class EduMaterialCreateViewTest(TestCase):
         # add material as an author
         response = self.client.get(reverse("edumaterial-create"))
         self.assertEqual(response.status_code, 200)
+
+        # make a POST request to add material
+        with open("pdfmaterials/some_pdf.pdf") as pdf:
+            response = self.client.post(reverse("edumaterial-create"),
+                                        {
+                                        })
+            self.assertEqual(response.status_code, 302)
