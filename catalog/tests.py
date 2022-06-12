@@ -1,3 +1,5 @@
+import sys
+
 from django.test import TestCase
 from django.contrib.auth.models import User, Permission, Group
 from django.core.files import File
@@ -238,6 +240,7 @@ class EduMaterialCreateViewTest(TestCase):
         self.assertEqual(response.status_code, 200)
 
         for category in models.Category.objects.all():
+            print(category)
             print(category.id)
 
         # make a POST request to add material
@@ -253,8 +256,11 @@ class EduMaterialCreateViewTest(TestCase):
                                         })
 
         self.assertEqual(response.status_code, 302)
+        created_material = models.EduMaterial.objects.get(title="sometitle")
         self.assertRedirects(response,
                              reverse("edumaterial-detail",
-                                     args=[str(models.EduMaterial.objects.get(title="sometitle").id)]
+                                     args=[str(created_material.id)]
                                      )
                              )
+        # print(created_material.author)
+        self.assertEqual(created_material.author, models.Author.objects.get(first_name="Test"))
