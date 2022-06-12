@@ -219,8 +219,8 @@ class EduMaterialCreateViewTest(TestCase):
         test_parent_category = models.Category.objects.create(name="parent",
                                                               info="some parent category",
                                                               parent_category=None)
-        test_parent_category.users_subscribed.add(test_user_not_author)
-        test_parent_category.save()
+        # test_parent_category.users_subscribed.add(test_user_not_author)
+        # test_parent_category.save()
 
         test_child_category = models.Category.objects.create(name="child",
                                                              info="some child category",
@@ -262,3 +262,72 @@ class EduMaterialCreateViewTest(TestCase):
 
         self.assertEqual(created_material.author, models.Author.objects.get(first_name="Test"))
         self.assertEqual(created_material.category.get_queryset()[0], models.Category.objects.get(name="child"))
+
+
+class SignUpViewTest(TestCase):
+    def test_view_url_exists_at_desired_location(self):
+        response = self.client.get(reverse("signup"))
+        self.assertEqual(response.status_code, 200)
+
+
+class MaterialFileViewTest(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        # we need three materials: for everybody, for signed in, for premium
+        # author
+        User.objects.create_user("someauthor", email="someauthor@example.com", password="12345687")
+        models.Author.objects.create(user=User.objects.get(username__exact="someauthor"),
+                                     first_name="Someauthor",
+                                     last_name="Oncetoldme",
+                                     info="Someauthor info")
+
+        # parent category
+        User.objects.create(username="somename", email="someemail@example.com", password="12345687")
+        User.objects.create(username="somename2", email="someemail2@example.com", password="12345687")
+        models.Category.objects.create(name="parent",
+                                       info="some parent category",
+                                       parent_category=None)
+        parent_category = models.Category.objects.get(name__exact="parent")
+        parent_category.users_subscribed.add(User.objects.get(username__exact="somename"))
+        parent_category.save()
+
+        # child category
+        models.Category.objects.create(name="child",
+                                       info="some child category",
+                                       parent_category=parent_category)
+        child_category = models.Category.objects.get(name="child")
+        child_category.users_subscribed.add(User.objects.get(username__exact="somename2"))
+        child_category.save()
+
+        edu_material = models.EduMaterial.objects.create(title="Material 1",
+                                                         summary="Some material 1 in child category",
+                                                         author=models.Author.objects.get(first_name="Someauthor"),
+                                                         access_type='p',
+                                                         pdf_file=File(open("pdfmaterials/some_pdf.pdf", 'rb')))
+        edu_material.category.add(child_category)
+        edu_material_2 = models.EduMaterial.objects.create(title="Material 2",
+                                                           summary="Some material 2 in child category",
+                                                           author=models.Author.objects.get(first_name="Someauthor"),
+                                                           access_type="s",
+                                                           pdf_file=File(open("pdfmaterials/some_pdf.pdf", "rb")))
+        edu_material_2.category.add(child_category)
+
+        edu_material_3 = models.EduMaterial.objects.create(title="Material 3",
+                                                           summary="Some material 3 in child category",
+                                                           author=models.Author.objects.get(first_name="Someauthor"),
+                                                           access_type="e",
+                                                           pdf_file=File(open("pdfmaterials/some_pdf.pdf", "rb")))
+        edu_material_3.category.add(child_category)
+
+    def test_access_to_materials_files(self):
+        material1 = models.EduMaterial.objects.get(title="Material 1")
+        material2 = models.EduMaterial.objects.get(title="Material 2")
+        material3 = models.EduMaterial.objects.get(title="Material 3")
+
+        self.assertEqual(material1.access_type, "p")
+        self.assertEqual(material2.access_type, "s")
+        self.assertEqual(material3.access_type, "e")
+
+        self.assertEqual(self.client.get(material1.get_absolute_file_url()).status_code, 403)
+        self.assertEqual(self.client.get(material2.get_absolute_file_url()).status_code, 403)
+        self.assertEqual(self.client.get(material3.get_absolute_file_url()).status_code, 200)
