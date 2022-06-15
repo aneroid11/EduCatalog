@@ -32,14 +32,7 @@ class RequestLogMiddleware:
             "request_path": request.get_full_path(),
         }
 
-        req_body = json.loads(request.body.decode("utf-8")) if request.body else {}
-        log_data["request_body"] = req_body
-
         response = self.get_response(request)
-
-        if response and response["content-type"] == "application/json":
-            response_body = json.loads(response.content.decode("utf-8"))
-            log_data["response_body"] = response_body
         log_data["run_time"] = time.time() - start_time
 
         logger.info(msg=log_data)
@@ -49,8 +42,6 @@ class RequestLogMiddleware:
 
     def process_exception(self, request: HttpRequest, exception: Exception) -> Exception:
         """Process unhandled exceptions"""
-        try:
-            raise exception
-        except Exception as e:
-            logger.exception("Unhandled Exception: " + str(e))
-        return exception
+
+        logger.exception("Unhandled Exception: " + str(exception))
+        raise exception
