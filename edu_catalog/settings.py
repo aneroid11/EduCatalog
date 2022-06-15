@@ -63,8 +63,7 @@ ROOT_URLCONF = 'edu_catalog.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates']
-        ,
+        'DIRS': [BASE_DIR / 'catalog/templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -136,7 +135,7 @@ LOGOUT_REDIRECT_URL = '/'
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
-TESTING = sys.argv[1:2] == ['test']
+# TESTING = sys.argv[1:2] == ['test']
 
 TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
 

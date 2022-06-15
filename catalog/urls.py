@@ -2,7 +2,7 @@ from django.urls import path, include
 from django.conf.urls.static import static
 from django.conf import settings
 from . import views
-from . import utils
+# from . import utils
 
 urlpatterns = [
     path("", views.IndexView.as_view(), name="index"),
@@ -23,5 +23,6 @@ urlpatterns = [
     path('get-premium-thanks', views.GetPremiumThanksView.as_view(), name='get-premium-thanks'),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
-if not settings.TESTING:
-    utils.delete_abandoned_files()
+# Just die, man.
+# if not settings.TESTING:
+# utils.delete_abandoned_files()

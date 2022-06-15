@@ -7,7 +7,7 @@ from django.contrib.auth import settings
 from django.core.files import File
 from django.shortcuts import reverse
 
-from . import utils
+# from . import utils
 from . import models
 from . import forms
 
@@ -133,10 +133,10 @@ class EduMaterialModelTest(TestCase):
                                                          )))
         edu_material.category.add(child_category)
 
-    @classmethod
+    """@classmethod
     def tearDownClass(cls):
         utils.delete_used_files()
-        super().tearDownClass()
+        super().tearDownClass()"""
 
     def test_labels(self):
         material = models.EduMaterial.objects.get(title="Material 1")
@@ -236,9 +236,9 @@ class EduMaterialCreateViewTest(TestCase):
         test_child_category.users_subscribed.add(test_user_not_author2)
         test_child_category.save()
 
-    def tearDown(self) -> None:
+    """def tearDown(self) -> None:
         utils.delete_used_files()
-        super().tearDown()
+        super().tearDown()"""
 
     def test_view_url_redirects_to_login_when_not_logged_in(self):
         response = self.client.get(reverse("edumaterial-create"))
@@ -331,11 +331,11 @@ class MaterialFileViewTest(TestCase):
                                                            pdf_file=File(open("pdfmaterials/курсач.pdf", "rb")))
         edu_material_3.category.add(child_category)
 
-    @classmethod
+    """@classmethod
     def tearDownClass(cls):
         utils.delete_used_files()
 
-        super().tearDownClass()
+        super().tearDownClass()"""
 
     def test_access_to_materials_files(self):
         material1 = models.EduMaterial.objects.get(title="Material 1")
@@ -351,7 +351,7 @@ class MaterialFileViewTest(TestCase):
         self.assertEqual(self.client.get(material3.get_absolute_file_url()).status_code, 200)
 
 
-class AbandonedFilesTest(TestCase):
+"""class AbandonedFilesTest(TestCase):
     def setUp(self):
         super().setUp()
 
@@ -369,7 +369,7 @@ class AbandonedFilesTest(TestCase):
         root_dir = settings.BASE_DIR / "pdfmaterials/"
 
         for subdir, dirs, files in os.walk(root_dir):
-            self.assertEqual(len(files), 0)
+            self.assertEqual(len(files), 0)"""
 
 
 class SubscribeCategoryViewTest(TestCase):

@@ -3,7 +3,7 @@ from django.contrib.auth import settings
 from .models import EduMaterial
 
 
-def delete_abandoned_files():
+"""def delete_abandoned_files():
     materials = EduMaterial.objects.all()
     files_not_to_delete = [material.pdf_file.path for material in materials]
     root_dir = settings.BASE_DIR / "pdfmaterials/"
@@ -21,4 +21,4 @@ def delete_used_files():
     files_to_delete = [material.pdf_file.path for material in materials]
 
     for file in files_to_delete:
-        os.remove(file)
+        os.remove(file)"""
