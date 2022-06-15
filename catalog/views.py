@@ -26,7 +26,7 @@ from django.urls import reverse_lazy
 from .models import Category, EduMaterial, Author
 from .forms import UserRegisterForm, GetUserCardDataForm
 
-logging.basicConfig(filename="views.log", level=logging.INFO)
+logging.basicConfig(filename="logs.txt", level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 

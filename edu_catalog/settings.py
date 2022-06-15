@@ -51,6 +51,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    # 'logmiddleware.request_log.RequestLogMiddleware',
 ]
 
 ROOT_URLCONF = 'edu_catalog.urls'
