@@ -103,7 +103,8 @@ class SubscribeCategoryView(LoginRequiredMixin, TemplateView):
         category = get_object_or_404(Category, pk=pk)
         category.users_subscribed.add(request.user)
         category.save()
-        logger.info("subscribe", request.user, "to category:", category.name)
+        # logger.info("subscribe", str(request.user), "to category:", str(category.name))
+        logger.info("subscribe to category with index: " + str(pk))
 
         return super(SubscribeCategoryView, self).get(request, *args, **kwargs)
 

@@ -370,3 +370,21 @@ class AbandonedFilesTest(TestCase):
 
         for subdir, dirs, files in os.walk(root_dir):
             self.assertEqual(len(files), 0)
+
+
+class SubscribeCategoryViewTest(TestCase):
+    def setUp(self) -> None:
+        super().setUp()
+        category = models.Category.objects.create(name="example",
+                                                  info="example info",
+                                                  parent_category=None)
+        test_user = User.objects.create_user(username="testuser", password="passwodr",
+                                             email="testuser@example.com")
+        self.client.login(username="testuser",
+                          password="passwodr")
+
+    def test_subscribe_to_category(self):
+        # path = "/catalog/category/" + str(models.Category.objects.get(name="example").id) + "/subscribe"
+        path = reverse("category-subscribe", args=[str(models.Category.objects.get(name="example").id)])
+        response = self.client.get(path)
+        self.assertEqual(response.status_code, 200)
