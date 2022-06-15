@@ -388,3 +388,12 @@ class SubscribeCategoryViewTest(TestCase):
         path = reverse("category-subscribe", args=[str(models.Category.objects.get(name="example").id)])
         response = self.client.get(path)
         self.assertEqual(response.status_code, 200)
+
+
+class SearchViewTest(TestCase):
+    def test_available_on_desired_location(self):
+        url = reverse("search-material")
+        url += "?usr_query=math"
+        response = self.client.get(url)
+
+        self.assertEqual(response.status_code, 200)
