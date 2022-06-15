@@ -39,9 +39,8 @@ class RequestLogMiddleware:
 
         return response
 
-
-    def process_exception(self, request: HttpRequest, exception: Exception) -> Exception:
-        """Process unhandled exceptions"""
+    def process_exception(self, request: HttpRequest, exception: Exception):
+        """Process unhandled exceptions."""
 
         logger.exception("Unhandled Exception: " + str(exception))
         raise exception
