@@ -3,7 +3,6 @@ Middleware to log requests and responses.
 """
 import socket
 import time
-import json
 import logging
 import types
 
