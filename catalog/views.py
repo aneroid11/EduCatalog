@@ -206,7 +206,7 @@ class GetPremiumView(FormView):
         permission = Permission.objects.get(codename="can_view_premium", content_type=content_type)
         self.request.user.user_permissions.add(permission)
 
-        logger.info("added premium to user:", self.request.user)
+        logger.info("added premium to user: " + str(self.request.user))
 
         return super().form_valid(form)
 

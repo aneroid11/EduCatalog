@@ -375,16 +375,15 @@ class AbandonedFilesTest(TestCase):
 class SubscribeCategoryViewTest(TestCase):
     def setUp(self) -> None:
         super().setUp()
-        category = models.Category.objects.create(name="example",
-                                                  info="example info",
-                                                  parent_category=None)
-        test_user = User.objects.create_user(username="testuser", password="passwodr",
-                                             email="testuser@example.com")
+        models.Category.objects.create(name="example",
+                                       info="example info",
+                                       parent_category=None)
+        User.objects.create_user(username="testuser", password="passwodr",
+                                 email="testuser@example.com")
         self.client.login(username="testuser",
                           password="passwodr")
 
     def test_subscribe_to_category(self):
-        # path = "/catalog/category/" + str(models.Category.objects.get(name="example").id) + "/subscribe"
         path = reverse("category-subscribe", args=[str(models.Category.objects.get(name="example").id)])
         response = self.client.get(path)
         self.assertEqual(response.status_code, 200)
@@ -397,3 +396,28 @@ class SearchViewTest(TestCase):
         response = self.client.get(url)
 
         self.assertEqual(response.status_code, 200)
+
+
+class GetPremiumViewTest(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        # create test user without premium (initially)
+        # User.objects.create_user()
+        super().setUpTestData()
+        User.objects.create_user(username="testuser", password="passwodr",
+                                 email="testuser@example.com")
+
+    def test_get_premium(self):
+        self.client.login(username="testuser", password="passwodr")
+        response = self.client.post(reverse("get-premium"),
+                                    {
+                                        "card_number": "000000000000",
+                                        "card_expiry": "12/30",
+                                        "card_code": "0000",
+                                    })
+        self.assertRedirects(response, reverse("get-premium-thanks"))
+
+        user = User.objects.get(username="testuser")
+
+        print(user.user_permissions.get_queryset())
+        self.assertTrue(user.has_perm("catalog.can_view_premium"))
