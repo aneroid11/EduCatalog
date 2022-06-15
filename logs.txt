@@ -1,0 +1,3 @@
+INFO:logmiddleware.request_log:{'remote_address': '127.0.0.1', 'server_hostname': 'strike', 'request_method': 'GET', 'request_path': '/catalog/', 'run_time': 0.014674901962280273}
+INFO:logmiddleware.request_log:{'remote_address': '127.0.0.1', 'server_hostname': 'strike', 'request_method': 'GET', 'request_path': '/catalog/okso', 'run_time': 0.007481575012207031}
+WARNING:django.request:Not Found: /catalog/okso

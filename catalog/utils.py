@@ -1,5 +1,4 @@
 import os
-import sys
 from django.contrib.auth import settings
 from .models import EduMaterial
 
@@ -23,5 +22,3 @@ def delete_used_files():
 
     for file in files_to_delete:
         os.remove(file)
-
-    # sys.exit(1)
