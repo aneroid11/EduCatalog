@@ -1,3 +1,5 @@
+"""Views for the app."""
+
 import threading
 import logging
 
@@ -18,7 +20,6 @@ from django.views.generic import (
     DeleteView
 )
 from django.views.generic.edit import CreateView, FormView
-from django.conf import settings
 from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
 
@@ -32,6 +33,7 @@ logger = logging.getLogger(__name__)
 
 
 def send_notify_about_category(category_id: int):
+    """Send an email to all users subscribed to the category."""
     try:
         category = Category.objects.get(id=category_id)
     except Exception as e:
@@ -55,6 +57,8 @@ def send_notify_about_category(category_id: int):
 
 
 class SignUpView(SuccessMessageMixin, CreateView):
+    """The view to sign up a user."""
+
     template_name = "registration/register.html"
     success_url = reverse_lazy('login')
     form_class = UserRegisterForm
@@ -62,7 +66,10 @@ class SignUpView(SuccessMessageMixin, CreateView):
 
 
 class MaterialFileView(View):
+    """The view to access the actual pdf file."""
+
     def get(self, request: HttpRequest, pk: int) -> FileResponse:
+        """Check if the user has permissions to access the file."""
         logger.info("request for file: " + str(pk))
         logger.info("getting the material")
         material = get_object_or_404(EduMaterial, pk=pk)
@@ -86,47 +93,63 @@ class MaterialFileView(View):
 
 
 class IndexView(TemplateView):
+    """Main page."""
+
     template_name = "catalog/index.html"
 
 
 class CategoriesView(ListView):
+    """List of main categories."""
+
     model = Category
 
 
 class CategoryDetailView(DetailView):
+    """View that shows the category and all nested categories."""
+
     model = Category
 
 
 class SubscribeCategoryView(LoginRequiredMixin, TemplateView):
+    """The view to subscribe to a category."""
+
     template_name = "catalog/subscribe_category.html"
     login_url = reverse_lazy('login')
 
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
+        """Subscribe user to a category."""
         pk = kwargs['pk']
         category = get_object_or_404(Category, pk=pk)
         category.users_subscribed.add(request.user)
         category.save()
-        # logger.info("subscribe", str(request.user), "to category:", str(category.name))
         logger.info("subscribe to category with index: " + str(pk))
 
         return super(SubscribeCategoryView, self).get(request, *args, **kwargs)
 
 
 class EduMaterialDetailView(DetailView):
+    """Information about a educational material."""
+
     model = EduMaterial
 
 
 class EduMaterialEditView(UpdateView):
+    """View to edit a material."""
+
     model = EduMaterial
     fields = ["title", "summary", "access_type", "pdf_file", "category"]
 
 
 class EduMaterialDeleteView(DeleteView):
+    """View to delete a material."""
+
     model = EduMaterial
     success_url = reverse_lazy('category-list')
 
 
 class EduMaterialCreateView(PermissionRequiredMixin, CreateView):
+    """View to create a material."""
+
     permission_required = "catalog.add_edumaterial"
     permission_denied_message = "You cannot add materials!"
     login_url = reverse_lazy("login")
@@ -134,6 +157,7 @@ class EduMaterialCreateView(PermissionRequiredMixin, CreateView):
     fields = ['title', 'summary', 'access_type', 'pdf_file', 'category', 'author']
 
     def get_form(self, *args, **kwargs):
+        """Alter category and author fields."""
         form = super(EduMaterialCreateView, self).get_form(*args, **kwargs)
         form.fields['category'].queryset = Category.objects.filter(category__isnull=True)
 
@@ -142,6 +166,7 @@ class EduMaterialCreateView(PermissionRequiredMixin, CreateView):
         return form
 
     def form_valid(self, form: forms.Form) -> HttpResponse:
+        """Start threads that notify users."""
         responce = super().form_valid(form)
         categories_to_update = []
 
@@ -165,21 +190,25 @@ class EduMaterialCreateView(PermissionRequiredMixin, CreateView):
 
 
 class AuthorListView(ListView):
+    """List of authors."""
+
     model = Author
 
 
 class AuthorDetailView(DetailView):
+    """Author page."""
+
     model = Author
 
 
 class SearchView(ListView):
+    """View for searching for a particular material."""
+
     model = EduMaterial
     template_name = "catalog/search.html"
 
-    def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
-        return super().get(request, *args, **kwargs)
-
     def get_queryset(self):
+        """Get the materials that contain the query."""
         usr_query = self.request.GET['usr_query']
         logger.info("user searched: " + usr_query)
         filtered_objects = EduMaterial.objects.filter(title__icontains=usr_query) | \
@@ -190,11 +219,14 @@ class SearchView(ListView):
 
 
 class GetPremiumView(FormView):
+    """View for getting card data from the user."""
+
     template_name = "catalog/get_premium_card_data.html"
     form_class = GetUserCardDataForm
     success_url = reverse_lazy('get-premium-thanks')
 
     def form_valid(self, form):
+        """Grant permission to view premium."""
         # This method is called when valid form data has been POSTed.
         # It should return an HttpResponse.
         content_type = ContentType.objects.get_for_model(EduMaterial)
@@ -207,4 +239,6 @@ class GetPremiumView(FormView):
 
 
 class GetPremiumThanksView(TemplateView):
+    """Premium 'thanks' view."""
+
     template_name = "catalog/get_premium_thanks.html"
