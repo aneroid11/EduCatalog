@@ -3,7 +3,8 @@
 import threading
 import logging
 
-from django.http import HttpResponse, HttpRequest, FileResponse, Http404
+from django.forms import Form
+from django.http import HttpResponse, HttpRequest, FileResponse, Http404, HttpResponseRedirect
 from django.core.exceptions import PermissionDenied
 from django import forms
 from django.core.mail import send_mass_mail
@@ -19,6 +20,7 @@ from django.views.generic import (
     UpdateView,
     DeleteView
 )
+from django.db.models.query import QuerySet
 from django.views.generic.edit import CreateView, FormView
 from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
@@ -156,7 +158,7 @@ class EduMaterialCreateView(PermissionRequiredMixin, CreateView):
     model = EduMaterial
     fields = ['title', 'summary', 'access_type', 'pdf_file', 'category', 'author']
 
-    def get_form(self, *args, **kwargs):
+    def get_form(self, *args, **kwargs) -> Form:
         """Alter category and author fields."""
         form = super(EduMaterialCreateView, self).get_form(*args, **kwargs)
         form.fields['category'].queryset = Category.objects.filter(category__isnull=True)
@@ -207,7 +209,7 @@ class SearchView(ListView):
     model = EduMaterial
     template_name = "catalog/search.html"
 
-    def get_queryset(self):
+    def get_queryset(self) -> QuerySet:
         """Get the materials that contain the query."""
         usr_query = self.request.GET['usr_query']
         logger.info("user searched: " + usr_query)
@@ -225,7 +227,7 @@ class GetPremiumView(FormView):
     form_class = GetUserCardDataForm
     success_url = reverse_lazy('get-premium-thanks')
 
-    def form_valid(self, form):
+    def form_valid(self, form: Form) -> HttpResponseRedirect:
         """Grant permission to view premium."""
         # This method is called when valid form data has been POSTed.
         # It should return an HttpResponse.

@@ -26,15 +26,15 @@ class EduMaterial(models.Model):
 
         permissions = (("can_view_premium", "View premium materials"),)
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Convert material to string."""
-        return self.title
+        return str(self.title)
 
-    def get_absolute_url(self):
+    def get_absolute_url(self) -> str:
         """Get the absolute url for the material."""
         return reverse('edumaterial-detail', args=[str(self.id)])
 
-    def get_absolute_file_url(self):
+    def get_absolute_file_url(self) -> str:
         """Get the url to access the file."""
         return reverse('edumaterial-file', args=[str(self.id)])
 
@@ -52,11 +52,11 @@ class Author(models.Model):
 
         ordering = ["-last_name"]
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Convert author to string."""
         return self.first_name + " " + self.last_name
 
-    def get_absolute_url(self):
+    def get_absolute_url(self) -> str:
         """Get the absolute url of the author."""
         return reverse('author-detail', args=[str(self.id)])
 
@@ -71,14 +71,14 @@ class Category(models.Model):
                                         on_delete=models.CASCADE)
     users_subscribed = models.ManyToManyField(User, blank=True)
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Convert model instance to string."""
-        return self.name
+        return str(self.name)
 
-    def get_absolute_url_for_subscribe(self):
+    def get_absolute_url_for_subscribe(self) -> str:
         """Get the absolute url of the category, which can be used to subscribe."""
         return reverse('category-subscribe', args=[str(self.id)])
 
-    def get_absolute_url(self):
+    def get_absolute_url(self) -> str:
         """Get the absolute url of the category."""
         return reverse('category-detail', args=[str(self.id)])
