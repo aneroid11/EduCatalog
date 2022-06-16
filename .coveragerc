@@ -20,4 +20,4 @@ omit =
     catalog/tests.py
     catalog/urls.py
 
-show_missing = true
+show_missing = false
