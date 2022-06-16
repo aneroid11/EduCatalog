@@ -363,7 +363,6 @@ class GetPremiumViewTest(TestCase):
     @classmethod
     def setUpTestData(cls):
         # create test user without premium (initially)
-        # User.objects.create_user()
         super().setUpTestData()
         User.objects.create_user(username="testuser", password="passwodr",
                                  email="testuser@example.com")

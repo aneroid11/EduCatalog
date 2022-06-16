@@ -4,8 +4,8 @@ from django.contrib.auth.models import User
 
 
 class EduMaterial(models.Model):
-    title = models.CharField(max_length=200)
-    summary = models.TextField(max_length=1000)
+    title = models.CharField(max_length=200, db_index=True)
+    summary = models.TextField(max_length=1000, db_index=True)
     author = models.ForeignKey('Author', null=True, on_delete=models.SET_NULL)
 
     ACCESS_TYPE = (
@@ -32,8 +32,8 @@ class EduMaterial(models.Model):
 
 class Author(models.Model):
     user = models.OneToOneField(User, on_delete=models.SET_NULL, null=True)
-    first_name = models.CharField(max_length=100)
-    last_name = models.CharField(max_length=100)
+    first_name = models.CharField(max_length=100, db_index=True)
+    last_name = models.CharField(max_length=100, db_index=True)
     info = models.TextField(max_length=1000)
 
     class Meta:
@@ -47,7 +47,7 @@ class Author(models.Model):
 
 
 class Category(models.Model):
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=100, db_index=True)
     info = models.TextField(max_length=1000)
     parent_category = models.ForeignKey('Category',
                                         null=True, blank=True,
