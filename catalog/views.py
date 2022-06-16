@@ -25,6 +25,8 @@ from django.urls import reverse_lazy
 from .models import Category, EduMaterial, Author
 from .forms import UserRegisterForm, GetUserCardDataForm
 
+from django.core.files.storage import default_storage as storage
+
 logging.basicConfig(filename="logs.txt", level=logging.INFO)
 logger = logging.getLogger(__name__)
 
@@ -74,12 +76,12 @@ class MaterialFileView(View):
                 logger.error("user cannot view premium materials but requests a premium material download!")
                 raise PermissionDenied
 
-        file_path = settings.BASE_DIR / material.pdf_file.path
+        fh = storage.open(material.pdf_file.name, "rb")
 
         try:
-            return FileResponse(open(file_path, "rb"), content_type="application/pdf")
+            return FileResponse(fh, content_type="application/pdf")
         except FileNotFoundError:
-            logger.error("there is no such file on the server:", file_path)
+            logger.error("there is no such file on the server")
             raise Http404()
 
 

@@ -42,6 +42,9 @@ INSTALLED_APPS = [
 
     'catalog.apps.CatalogConfig',
     'django_nose',
+
+    'cloudinary_storage',
+    'cloudinary',
 ]
 
 MIDDLEWARE = [
@@ -127,6 +130,16 @@ STATIC_URL = '/static/'
 
 STATIC_ROOT = BASE_DIR / 'static'
 
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': os.environ.get("CLOUD_NAME"),
+    'API_KEY': os.environ.get("API_KEY"),
+    'API_SECRET': os.environ.get("API_SECRET")
+}
+
+MEDIA_URL = '/public/'
+
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
@@ -137,8 +150,6 @@ LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-
-# TESTING = sys.argv[1:2] == ['test']
 
 TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
 
