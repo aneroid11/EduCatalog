@@ -10,6 +10,10 @@ services:
       - 8000:8000
     depends_on:
       - db
+    environment:
+      - "CLOUD_NAME=diz9rhle5"
+      - "API_KEY=456721993765326"
+      - "API_SECRET=6il-R7lH1UgTrAEgBVusatywfQM"
   db:
     image: postgres:14
     volumes:

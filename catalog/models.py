@@ -52,7 +52,7 @@ class Category(models.Model):
     parent_category = models.ForeignKey('Category',
                                         null=True, blank=True,
                                         on_delete=models.CASCADE)
-    users_subscribed = models.ManyToManyField(User)
+    users_subscribed = models.ManyToManyField(User, blank=True)
 
     def __str__(self):
         return self.name
