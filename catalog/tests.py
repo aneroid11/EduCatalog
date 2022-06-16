@@ -7,7 +7,6 @@ from django.contrib.auth import settings
 from django.core.files import File
 from django.shortcuts import reverse
 
-# from . import utils
 from . import models
 from . import forms
 
@@ -133,11 +132,6 @@ class EduMaterialModelTest(TestCase):
                                                          )))
         edu_material.category.add(child_category)
 
-    """@classmethod
-    def tearDownClass(cls):
-        utils.delete_used_files()
-        super().tearDownClass()"""
-
     def test_labels(self):
         material = models.EduMaterial.objects.get(title="Material 1")
         self.assertEqual(material._meta.get_field('title').max_length, 200)
@@ -218,27 +212,21 @@ class EduMaterialCreateViewTest(TestCase):
 
         authors_group.user_set.add(test_user)
 
-        test_user_not_author = User.objects.create_user(username="user1",
-                                                        email="user1@example.com",
-                                                        password="passwodr")
+        User.objects.create_user(username="user1",
+                                 email="user1@example.com",
+                                 password="passwodr")
         test_user_not_author2 = User.objects.create_user(username="user2",
                                                          email="user2@example.com",
                                                          password="passwodr")
         test_parent_category = models.Category.objects.create(name="parent",
                                                               info="some parent category",
                                                               parent_category=None)
-        # test_parent_category.users_subscribed.add(test_user_not_author)
-        # test_parent_category.save()
 
         test_child_category = models.Category.objects.create(name="child",
                                                              info="some child category",
                                                              parent_category=test_parent_category)
         test_child_category.users_subscribed.add(test_user_not_author2)
         test_child_category.save()
-
-    """def tearDown(self) -> None:
-        utils.delete_used_files()
-        super().tearDown()"""
 
     def test_view_url_redirects_to_login_when_not_logged_in(self):
         response = self.client.get(reverse("edumaterial-create"))
@@ -331,12 +319,6 @@ class MaterialFileViewTest(TestCase):
                                                            pdf_file=File(open("pdfmaterials/курсач.pdf", "rb")))
         edu_material_3.category.add(child_category)
 
-    """@classmethod
-    def tearDownClass(cls):
-        utils.delete_used_files()
-
-        super().tearDownClass()"""
-
     def test_access_to_materials_files(self):
         material1 = models.EduMaterial.objects.get(title="Material 1")
         material2 = models.EduMaterial.objects.get(title="Material 2")
@@ -349,27 +331,6 @@ class MaterialFileViewTest(TestCase):
         self.assertEqual(self.client.get(material1.get_absolute_file_url()).status_code, 403)
         self.assertEqual(self.client.get(material2.get_absolute_file_url()).status_code, 403)
         self.assertEqual(self.client.get(material3.get_absolute_file_url()).status_code, 200)
-
-
-"""class AbandonedFilesTest(TestCase):
-    def setUp(self):
-        super().setUp()
-
-        os.rename("pdfmaterials", "pdfmaterials_copy")
-        os.mkdir("pdfmaterials", mode=0o777)
-        shutil.copy("pdfmaterials_copy/курсач.pdf", "pdfmaterials/")
-
-    def tearDown(self) -> None:
-        super().tearDown()
-        os.rename("pdfmaterials_copy", "pdfmaterials")
-
-    def test_abandoned_files(self):
-        utils.delete_abandoned_files()
-
-        root_dir = settings.BASE_DIR / "pdfmaterials/"
-
-        for subdir, dirs, files in os.walk(root_dir):
-            self.assertEqual(len(files), 0)"""
 
 
 class SubscribeCategoryViewTest(TestCase):
