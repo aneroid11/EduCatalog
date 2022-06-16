@@ -20,4 +20,4 @@ COPY . .
 RUN python manage.py collectstatic --noinput
 
 # run gunicorn
-CMD gunicorn hello_django.wsgi:application --bind 0.0.0.0:$PORT
+CMD gunicorn edu_catalog.wsgi:application --bind 0.0.0.0:$PORT
