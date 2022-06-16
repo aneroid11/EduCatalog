@@ -83,7 +83,7 @@ WSGI_APPLICATION = 'edu_catalog.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
-"""DATABASES = {
+DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'postgres',
@@ -92,8 +92,8 @@ WSGI_APPLICATION = 'edu_catalog.wsgi.application'
         'HOST': '127.0.0.1',
         'PORT': '5432'
     }
-}"""
-DATABASES = {
+}
+"""DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
         "NAME": "postgres",
@@ -102,7 +102,7 @@ DATABASES = {
         "HOST": "db",  # set in docker-compose.yml
         "PORT": 5432,  # default postgres port
     }
-}
+}"""
 
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
