@@ -131,9 +131,6 @@ class EduMaterialCreateView(PermissionRequiredMixin, CreateView):
     model = EduMaterial
     fields = ['title', 'summary', 'access_type', 'pdf_file', 'category', 'author']
 
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-
     def get_form(self, *args, **kwargs):
         form = super(EduMaterialCreateView, self).get_form(*args, **kwargs)
         form.fields['category'].queryset = Category.objects.filter(category__isnull=True)
@@ -145,10 +142,6 @@ class EduMaterialCreateView(PermissionRequiredMixin, CreateView):
     def form_valid(self, form: forms.Form) -> HttpResponse:
         responce = super().form_valid(form)
         categories_to_update = []
-
-        request = self.request
-        # print(request.POST)
-        # print(form.cleaned_data['category'][0].users_subscribed.all())
 
         for category in form.cleaned_data['category']:
             while category is not None:
