@@ -1,0 +1,23 @@
+[run]
+omit =
+    */migrations/*
+    */__init__.py
+    manage.py
+    edu_catalog/*
+    catalog/admin.py
+    catalog/apps.py
+    catalog/tests.py
+    catalog/urls.py
+
+[report]
+omit =
+    */migrations/*
+    */__init__.py
+    manage.py
+    edu_catalog/*
+    catalog/admin.py
+    catalog/apps.py
+    catalog/tests.py
+    catalog/urls.py
+
+show_missing = false

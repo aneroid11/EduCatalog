@@ -1,0 +1,15 @@
+{% extends "catalog/base_generic.html" %}
+
+{% block content %}
+    {% if not user.author %}
+        <h1>Please <a href="{% url 'login' %}">login</a> as an author to add or update your materials.</h1>
+    {% else %}
+        <form action="" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <table>
+                {{ form.as_table }}
+            </table>
+            <input type="submit" value="Create">
+        </form>
+    {% endif %}
+{% endblock %}

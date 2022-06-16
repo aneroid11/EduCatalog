@@ -1,0 +1,18 @@
+{% extends "catalog/base_generic.html" %}
+
+{% block content %}
+    <h1>{{ edumaterial.title }} (<a href="{{ edumaterial.author.get_absolute_url }}">{{ edumaterial.author }}</a>)</h1>
+    <hr>
+    <div class="multiline">{{ edumaterial.summary }}</div>
+    <hr>
+    <p><strong>{{ edumaterial.get_access_type_display }}</strong></p>
+    <hr>
+    <p><a href="{{ edumaterial.get_absolute_file_url }}">PDF file</a></p>
+    <hr>
+    {% if user.author %}
+        {% if user.author == edumaterial.author %}
+            <p><a href="{% url 'edumaterial-delete' edumaterial.id %}">Delete material</a></p>
+            <p><a href="{% url 'edumaterial-edit' edumaterial.id %}">Edit material</a></p>
+        {% endif %}
+    {% endif %}
+{% endblock %}

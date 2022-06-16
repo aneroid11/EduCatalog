@@ -1,0 +1,17 @@
+{% extends "catalog/base_generic.html" %}
+
+{% block content %}
+    <h1>Search results</h1>
+    <br>
+
+    {% if edumaterial_list.count > 0 %}
+        {% for material in edumaterial_list %}
+            <hr>
+            <p><a href="{{ material.get_absolute_url }}">{{ material.title }}</a>
+                (<a href="{{ material.author.get_absolute_url }}">{{ material.author }}</a>)</p>
+            <p>{{ material.summary }}</p>
+        {% endfor %}
+    {% else %}
+        <p>Nothing found!</p>
+    {% endif %}
+{% endblock %}

@@ -1,0 +1,15 @@
+{% extends "catalog/base_generic.html" %}
+
+{% block content %}
+    {% if user.author == edumaterial.author %}
+        <h1>Delete material</h1>
+        <p>Are you sure you want to delete material: {{ edumaterial.title }}?</p>
+
+        <form action="" method="POST">
+            {% csrf_token %}
+            <input type="submit" value="Yes, delete.">
+        </form>
+    {% else %}
+        <h1>You cannot delete this material!</h1>
+    {% endif %}
+{% endblock %}
