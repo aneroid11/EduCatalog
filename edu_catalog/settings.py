@@ -30,6 +30,10 @@ DEBUG = os.environ.get('DJANGO_DEBUG', '') != 'False'
 
 ALLOWED_HOSTS = ["127.0.0.1", "serene-inlet-07355.herokuapp.com"]
 
+CSRF_TRUSTED_ORIGINS = [
+    'https://serene-inlet-07355.herokuapp.com'
+]
+
 # Application definition
 
 INSTALLED_APPS = [
