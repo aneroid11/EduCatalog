@@ -1,34 +1,30 @@
 """Views for the app."""
 
-import threading
 import logging
+import threading
 
-from django.forms import Form
-from django.http import HttpResponse, HttpRequest, FileResponse, Http404, HttpResponseRedirect
-from django.core.exceptions import PermissionDenied
 from django import forms
-from django.core.mail import send_mass_mail
-from django.views import View
-from django.contrib.messages.views import SuccessMessageMixin
+from django.contrib.auth.mixins import (LoginRequiredMixin,
+                                        PermissionRequiredMixin)
 from django.contrib.auth.models import Permission
-from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.contrib.contenttypes.models import ContentType
-from django.views.generic import (
-    TemplateView,
-    ListView,
-    DetailView,
-    UpdateView,
-    DeleteView
-)
+from django.contrib.messages.views import SuccessMessageMixin
+from django.core.exceptions import PermissionDenied
+from django.core.files.storage import default_storage as storage
+from django.core.mail import send_mass_mail
 from django.db.models.query import QuerySet
-from django.views.generic.edit import CreateView, FormView
+from django.forms import Form
+from django.http import (FileResponse, Http404, HttpRequest, HttpResponse,
+                         HttpResponseRedirect)
 from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
+from django.views import View
+from django.views.generic import (DeleteView, DetailView, ListView,
+                                  TemplateView, UpdateView)
+from django.views.generic.edit import CreateView, FormView
 
-from .models import Category, EduMaterial, Author
-from .forms import UserRegisterForm, GetUserCardDataForm
-
-from django.core.files.storage import default_storage as storage
+from .forms import GetUserCardDataForm, UserRegisterForm
+from .models import Author, Category, EduMaterial
 
 logging.basicConfig(filename="logs.txt", level=logging.INFO)
 logger = logging.getLogger(__name__)

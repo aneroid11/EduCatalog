@@ -1,9 +1,10 @@
 """Catalog forms."""
 
+from creditcards.forms import (CardExpiryField, CardNumberField,
+                               SecurityCodeField)
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from creditcards.forms import CardNumberField, CardExpiryField, SecurityCodeField
 
 
 class UserRegisterForm(UserCreationForm):

@@ -1,9 +1,9 @@
 """
 Middleware to log requests and responses.
 """
+import logging
 import socket
 import time
-import logging
 import types
 
 from django.http.request import HttpRequest

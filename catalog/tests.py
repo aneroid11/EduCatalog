@@ -1,10 +1,9 @@
-from django.test import TestCase
-from django.contrib.auth.models import User, Permission, Group
+from django.contrib.auth.models import Group, Permission, User
 from django.core.files import File
 from django.shortcuts import reverse
+from django.test import TestCase
 
-from . import models
-from . import forms
+from . import forms, models
 
 
 class AuthorModelTest(TestCase):
